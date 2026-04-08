@@ -1,6 +1,6 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
-import { Plus, FileText, Copy, Pencil, Trash2, Search, ShieldAlert, Stethoscope, ClipboardList, Users } from "lucide-react";
+import { Plus, FileText, Copy, Pencil, Trash2, Search, ShieldAlert, Stethoscope, ClipboardList, Users, Upload, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const templates = [
@@ -127,10 +127,31 @@ export default function Templates() {
               <h1 className="text-2xl font-bold">Form Templates</h1>
               <p className="text-[var(--color-text-secondary)] text-sm mt-1">MGMCRI Hospital, Pondicherry — Standardized consent forms</p>
             </div>
-            <button className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
-              <Plus className="w-4 h-4" /> Create Template
-            </button>
+            <div className="flex gap-2">
+              <Link href="/templates/upload" className="inline-flex items-center gap-2 border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-teal-50 transition-colors">
+                <Upload className="w-4 h-4" /> Upload Your Form
+              </Link>
+              <button className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
+                <Plus className="w-4 h-4" /> Create Template
+              </button>
+            </div>
           </div>
+
+          {/* Upload Your Own Form Banner */}
+          <Link href="/templates/upload" className="block mb-6 border-2 border-dashed border-[var(--color-primary)]/30 rounded-xl p-5 hover:border-[var(--color-primary)] hover:bg-teal-50/30 transition-all group cursor-pointer">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center group-hover:bg-teal-100 transition-colors">
+                <Sparkles className="w-6 h-6 text-[var(--color-primary)]" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-sm">Already have paper consent forms?</h3>
+                <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">Upload a photo or PDF of your hospital&apos;s existing form — we&apos;ll convert it into an editable digital template with all fields detected automatically</p>
+              </div>
+              <span className="text-sm font-medium text-[var(--color-primary)] flex items-center gap-1">
+                Upload Form <Upload className="w-4 h-4" />
+              </span>
+            </div>
+          </Link>
 
           <div className="flex items-center gap-3 mb-6">
             <div className="relative flex-1 max-w-sm">
