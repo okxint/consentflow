@@ -168,46 +168,56 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ── Hero ── */}
-      <section className="bg-gray-50/50 pt-32 pb-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Left — text */}
-            <div className="max-w-lg">
-              {/* Pill badge */}
-              <div className="inline-flex items-center gap-2 bg-white border border-gray-200 px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)]">
-                <Shield className="w-3.5 h-3.5 text-teal-600" />
-                IT Act 2000 Compliant
+      {/* ── Hero — Dark Left + WhatsApp Right ── */}
+      <section className="pt-28 pb-0">
+        <div className="relative">
+          {/* Dark background covers left half */}
+          <div className="absolute inset-0 bg-[#0c1222]" />
+          {/* Subtle grid pattern */}
+          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M0 40V0h40' fill='none' stroke='white' stroke-width='.5'/%3E%3C/svg%3E\")" }} />
+
+          <div className="relative max-w-6xl mx-auto px-6 py-20 pb-24">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              {/* Left — text on dark */}
+              <div className="max-w-lg">
+                <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full text-sm font-medium text-teal-300 mb-8">
+                  <Shield className="w-3.5 h-3.5" />
+                  IT Act 2000 Compliant
+                </div>
+
+                <h1 className="text-[2.75rem] leading-[1.15] tracking-tight text-white mb-6">
+                  <span className="font-normal">Digital Consent.</span>
+                  <br />
+                  <span className="italic font-normal text-teal-300">With Video Proof.</span>
+                </h1>
+
+                <p className="text-base font-light text-gray-400 leading-[1.6] mb-10 max-w-md">
+                  Doctors create consent forms. Assistants send them via WhatsApp. Patients review, record a video KYC, and sign — all from their phone.
+                </p>
+
+                <div className="flex items-center gap-4 mb-6">
+                  <Link href="/login" className="inline-flex items-center gap-2 bg-teal-600 text-white h-11 px-8 rounded-full font-medium text-sm hover:bg-teal-700 transition-colors">
+                    Doctor Login <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link href="/sign/cf-001" className="text-gray-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-1.5">
+                    Try Patient View →
+                  </Link>
+                </div>
+
+                <div className="flex items-center gap-5">
+                  {["IT Act 2000", "Video KYC", "22 Languages"].map((item) => (
+                    <span key={item} className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <CheckCircle className="w-3.5 h-3.5 text-teal-500" />
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              <h1 className="text-[2.75rem] leading-[1.15] tracking-tight text-gray-900 mb-6">
-                <span className="font-normal">Digital Consent.</span>
-                <br />
-                <span className="italic font-normal">With Video Proof.</span>
-              </h1>
-
-              <p className="text-base font-light text-gray-500 leading-[1.6] mb-10 max-w-md">
-                Doctors create consent forms. Assistants send them via WhatsApp. Patients review, record a video KYC, and sign — all from their phone.
-              </p>
-
-              <Link href="/login" className="inline-flex items-center gap-2 bg-gray-900 text-white h-11 px-8 rounded-full font-medium text-sm hover:bg-gray-800 transition-colors">
-                Doctor Login <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              {/* Checkmarks row */}
-              <div className="flex items-center gap-5 mt-6">
-                {["IT Act 2000", "Video KYC", "22 Languages"].map((item) => (
-                  <span key={item} className="flex items-center gap-1.5 text-xs text-gray-400">
-                    <CheckCircle className="w-3.5 h-3.5 text-teal-500" />
-                    {item}
-                  </span>
-                ))}
+              {/* Right — WhatsApp demo */}
+              <div className="flex justify-center">
+                <WhatsAppDemo />
               </div>
-            </div>
-
-            {/* Right — WhatsApp demo */}
-            <div className="flex justify-center">
-              <WhatsAppDemo />
             </div>
           </div>
         </div>
@@ -233,34 +243,25 @@ export default function Home() {
             <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gray-100 via-gray-200 to-gray-100 -translate-x-1/2 hidden md:block" />
 
             <div className="space-y-16 md:space-y-24">
-              {/* Step 1 — Left */}
+              {/* Step 1 — Left: Doctor form with animated typing */}
               <div className="md:grid md:grid-cols-2 md:gap-16 relative">
                 <div className="absolute left-1/2 top-8 w-3 h-3 rounded-full bg-teal-500 -translate-x-1/2 border-2 border-white shadow-md hidden md:block z-10" />
                 <div>
-                  <TimelineCard
-                    number="01"
-                    badge="2 MINUTES"
-                    heading="Doctor Creates Form"
-                    description="Select a procedure template. Customize risks, diagnosis, and notes for the specific patient. Save and it's ready to send."
-                  >
-                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                      <div className="space-y-2.5">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-teal-500" />
-                          <div className="h-2.5 bg-gray-200 rounded w-28" />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-gray-300" />
-                          <div className="h-2.5 bg-gray-200 rounded w-36" />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-gray-300" />
-                          <div className="h-2.5 bg-gray-200 rounded w-24" />
-                        </div>
-                        <div className="mt-3 flex gap-2">
-                          <div className="h-7 bg-gray-900 rounded-full w-20" />
-                          <div className="h-7 bg-gray-100 rounded-full w-16 border border-gray-200" />
-                        </div>
+                  <TimelineCard number="01" badge="2 MINUTES" heading="Doctor Creates Form" description="Select a procedure template. Customize risks, diagnosis, and notes for the specific patient. Save and it&apos;s ready to send.">
+                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 text-[11px]">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-5 h-5 rounded bg-teal-600 flex items-center justify-center"><FileText className="w-3 h-3 text-white" /></div>
+                        <span className="font-semibold text-gray-700 text-xs">New Consent Form</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center"><span className="text-gray-400">Patient</span><span className="font-medium text-gray-700">Selvam M</span></div>
+                        <div className="flex justify-between items-center"><span className="text-gray-400">Procedure</span><span className="font-medium text-gray-700">Wound Debridement</span></div>
+                        <div className="flex justify-between items-center"><span className="text-gray-400">Surgeon</span><span className="font-medium text-gray-700">Dr. Vishnu Vardhan</span></div>
+                        <div className="flex justify-between items-center"><span className="text-gray-400">Template</span><span className="text-teal-600 font-medium">MGMCRI Surgery ✓</span></div>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <div className="h-7 bg-gray-900 text-white rounded-full px-4 flex items-center text-[10px] font-medium">Send via WhatsApp</div>
+                        <div className="h-7 bg-white rounded-full px-3 flex items-center text-[10px] text-gray-500 border border-gray-200">Save Draft</div>
                       </div>
                     </div>
                   </TimelineCard>
@@ -268,77 +269,97 @@ export default function Home() {
                 <div className="hidden md:block" />
               </div>
 
-              {/* Step 2 — Right */}
+              {/* Step 2 — Right: WhatsApp message flow */}
               <div className="md:grid md:grid-cols-2 md:gap-16 relative">
                 <div className="absolute left-1/2 top-8 w-3 h-3 rounded-full bg-teal-500 -translate-x-1/2 border-2 border-white shadow-md hidden md:block z-10" />
                 <div className="hidden md:block" />
                 <div>
-                  <TimelineCard
-                    number="02"
-                    badge="INSTANT"
-                    heading="Assistant Sends via WhatsApp"
-                    description="The medical assistant sends the patient's details to the ConsentFlow bot. A secure consent link is delivered to the patient's WhatsApp instantly."
-                  >
-                    <div className="bg-[#ece5dd] rounded-xl p-3 border border-gray-200/60">
-                      <div className="bg-white rounded-lg rounded-tl-none px-3 py-2 shadow-sm max-w-[80%] text-[11px] leading-relaxed">
+                  <TimelineCard number="02" badge="INSTANT" heading="Assistant Sends via WhatsApp" description="The medical assistant sends patient details to the ConsentFlow bot. A secure consent link is delivered to the patient&apos;s WhatsApp instantly.">
+                    <div className="bg-[#ece5dd] rounded-xl p-3 space-y-2">
+                      <div className="flex justify-end">
+                        <div className="bg-[#dcf8c6] rounded-lg rounded-tr-none px-2.5 py-1.5 shadow-sm max-w-[75%] text-[11px]">
+                          <p>Selvam M, Wound Debridement, 9900145678</p>
+                          <p className="text-[9px] text-gray-500 text-right mt-0.5">10:05 AM ✓✓</p>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg rounded-tl-none px-2.5 py-1.5 shadow-sm max-w-[80%] text-[11px]">
                         <p className="text-[9px] font-bold text-[#075e54] mb-0.5">ConsentFlow Bot</p>
-                        <p className="text-gray-700">Consent link sent to<br />+91 99001 45678</p>
+                        <p>✅ Consent form created<br/>📤 Link sent to +91 99001 45678</p>
+                        <p className="text-[9px] text-gray-500 text-right mt-0.5">10:05 AM</p>
+                      </div>
+                      <div className="bg-white rounded-lg rounded-tl-none px-2.5 py-1.5 shadow-sm max-w-[80%] text-[11px]">
+                        <p className="text-[9px] font-bold text-[#075e54] mb-0.5">ConsentFlow Bot</p>
+                        <p>📱 Patient opened the link ✓</p>
+                        <p className="text-[9px] text-gray-500 text-right mt-0.5">10:12 AM</p>
                       </div>
                     </div>
                   </TimelineCard>
                 </div>
               </div>
 
-              {/* Step 3 — Left */}
+              {/* Step 3 — Left: Video KYC with animated recording */}
               <div className="md:grid md:grid-cols-2 md:gap-16 relative">
                 <div className="absolute left-1/2 top-8 w-3 h-3 rounded-full bg-teal-500 -translate-x-1/2 border-2 border-white shadow-md hidden md:block z-10" />
                 <div>
-                  <TimelineCard
-                    number="03"
-                    badge="3 SECONDS"
-                    heading="Patient Records Video KYC"
-                    description="Patient opens the link, reviews the procedure details, then records a 3-second video saying they consent. Face visible, timestamped, stored securely."
-                  >
-                    <div className="bg-gray-900 rounded-xl p-4 aspect-video flex items-center justify-center relative overflow-hidden">
-                      <div className="w-12 h-12 border-2 border-white/50 rounded-full flex items-center justify-center">
-                        <Video className="w-5 h-5 text-white/70" />
-                      </div>
-                      <div className="absolute top-2 left-2 flex items-center gap-1 bg-red-600 text-white px-1.5 py-0.5 rounded text-[9px] font-semibold">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                        REC
-                      </div>
-                      <div className="absolute bottom-2 left-2 right-2 text-center text-[10px] text-white/70">
-                        &ldquo;I agree to this procedure&rdquo;
-                      </div>
-                    </div>
-                  </TimelineCard>
-                </div>
-                <div className="hidden md:block" />
-              </div>
-
-              {/* Step 4 — Right */}
-              <div className="md:grid md:grid-cols-2 md:gap-16 relative">
-                <div className="absolute left-1/2 top-8 w-3 h-3 rounded-full bg-teal-500 -translate-x-1/2 border-2 border-white shadow-md hidden md:block z-10" />
-                <div className="hidden md:block" />
-                <div>
-                  <TimelineCard
-                    number="04"
-                    badge="DONE"
-                    heading="Signed, Sealed, Stored"
-                    description="The consent form is complete with video KYC, digital signature, and witness co-sign. A QR code is generated for instant verification anytime."
-                  >
-                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center gap-4">
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-1.5 text-[11px] text-teal-700 font-medium">
-                          <CheckCircle className="w-3.5 h-3.5" />
-                          Consent Complete
+                  <TimelineCard number="03" badge="3 SECONDS" heading="Patient Records Video KYC" description="Patient opens the link, reviews the procedure, then records a 3-second video saying they consent. Face visible, timestamped.">
+                    <div className="bg-gray-900 rounded-xl overflow-hidden relative">
+                      <div className="aspect-video flex items-center justify-center relative">
+                        {/* Animated pulse ring */}
+                        <div className="w-16 h-16 rounded-full border-2 border-white/40 flex items-center justify-center" style={{ animation: "pulse-ring 2s ease-in-out infinite" }}>
+                          <Video className="w-6 h-6 text-white/80" />
                         </div>
-                        <div className="h-2 bg-gray-200 rounded w-full" />
-                        <div className="h-2 bg-gray-200 rounded w-3/4" />
-                        <p className="text-[10px] text-gray-400 italic mt-1">Ananya Reddy</p>
+                        {/* REC badge */}
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-red-600 text-white px-2 py-0.5 rounded text-[10px] font-semibold">
+                          <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                          REC 0:03
+                        </div>
+                        {/* Timer bar */}
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                          <div className="h-full bg-red-500 animate-[grow_3s_ease-in-out_infinite]" style={{ width: "60%" }} />
+                        </div>
                       </div>
-                      <div className="w-14 h-14 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <span className="text-[8px] text-gray-400 font-mono">QR</span>
+                      {/* Prompt */}
+                      <div className="bg-black/60 px-4 py-2.5 text-center">
+                        <p className="text-[10px] text-white/50 uppercase tracking-wider mb-0.5">Say aloud:</p>
+                        <p className="text-white text-[12px] font-medium">&ldquo;I, Selvam, agree to this procedure&rdquo;</p>
+                      </div>
+                    </div>
+                  </TimelineCard>
+                </div>
+                <div className="hidden md:block" />
+              </div>
+
+              {/* Step 4 — Right: Completed consent */}
+              <div className="md:grid md:grid-cols-2 md:gap-16 relative">
+                <div className="absolute left-1/2 top-8 w-3 h-3 rounded-full bg-teal-500 -translate-x-1/2 border-2 border-white shadow-md hidden md:block z-10" />
+                <div className="hidden md:block" />
+                <div>
+                  <TimelineCard number="04" badge="DONE" heading="Signed, Sealed, Stored" description="Consent form is complete with video KYC, digital signature, and witness co-sign. QR code for instant verification anytime.">
+                    <div className="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
+                      {/* Mini consent doc */}
+                      <div className="p-4 border-b border-gray-100">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded bg-teal-600 flex items-center justify-center"><FileText className="w-3 h-3 text-white" /></div>
+                            <span className="text-xs font-semibold text-gray-700">MGMCRI Consent</span>
+                          </div>
+                          <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">COMPLETE</span>
+                        </div>
+                        <div className="space-y-1.5 text-[11px]">
+                          <div className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 text-green-500" /><span>Surgical Consent — Signed</span></div>
+                          <div className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 text-green-500" /><span>Anaesthesia Consent — Signed</span></div>
+                          <div className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 text-green-500" /><span>Video KYC — Recorded</span></div>
+                          <div className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 text-green-500" /><span>Witness — Meera Kumar (Spouse)</span></div>
+                        </div>
+                      </div>
+                      <div className="px-4 py-3 flex items-center justify-between bg-white">
+                        <div>
+                          <p className="text-[11px] font-medium text-gray-700">Selvam M</p>
+                          <p className="text-[10px] text-gray-400">MGMCRI-2026-4521 · Apr 8, 2026</p>
+                        </div>
+                        <div className="w-10 h-10 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
+                          <span className="text-[7px] text-gray-400 font-mono leading-none text-center">QR<br/>Code</span>
+                        </div>
                       </div>
                     </div>
                   </TimelineCard>
