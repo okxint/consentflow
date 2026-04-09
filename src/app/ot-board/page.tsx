@@ -62,9 +62,9 @@ export default function OTBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-dark)]">
+    <div className="min-h-screen bg-[#0c1222]">
       {/* Top bar */}
-      <div className="bg-[var(--color-dark-card)] border-b border-gray-700/50 px-8 py-4 flex items-center justify-between">
+      <div className="bg-[#151d2e] border-b border-gray-700/50 px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)] flex items-center justify-center">
             <span className="text-white text-xs font-bold">MG</span>
@@ -100,7 +100,7 @@ export default function OTBoard() {
           {surgeries.map(surgery => (
             <div
               key={surgery.id}
-              className={`bg-[var(--color-dark-card)] rounded-xl border border-gray-700/50 overflow-hidden border-l-4 ${borderColors[surgery.consentLevel]}`}
+              className={`bg-[#151d2e] rounded-xl border border-gray-700/50 overflow-hidden border-l-4 ${borderColors[surgery.consentLevel]}`}
             >
               <div className="p-6">
                 {/* Header */}

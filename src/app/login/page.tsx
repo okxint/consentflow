@@ -92,10 +92,17 @@ export default function LoginPage() {
                 ))}
               </div>
 
+              {selectedHospital && (
+                <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-center">
+                  <p className="text-xs text-[var(--color-muted)]">Your login URL:</p>
+                  <p className="text-sm font-semibold text-[var(--color-text)]">{selectedHospital.id}.consentflow.app</p>
+                </div>
+              )}
+
               <button
                 onClick={handleHospitalContinue}
                 disabled={!selectedHospital}
-                className="w-full mt-6 bg-[var(--color-primary)] text-white py-3 rounded-lg font-medium text-sm hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+                className="w-full mt-4 bg-[var(--color-primary)] text-white py-3 rounded-lg font-medium text-sm hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
               >
                 Continue <ChevronRight className="w-4 h-4" />
               </button>

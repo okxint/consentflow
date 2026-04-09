@@ -58,6 +58,7 @@ export function Sidebar() {
           <div>
             <p className="text-sm font-medium">{doctor.name}</p>
             <p className="text-xs text-[var(--color-muted)]">{hospital.name.length > 20 ? "MGMCRI" : hospital.name}</p>
+            <p className="text-[10px] text-gray-400">{hospital.id}.consentflow.app</p>
           </div>
         </div>
       </div>
