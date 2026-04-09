@@ -4,14 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Upload, Video, Circle, Play, RotateCcw } from "lucide-react";
 import { SignaturePad } from "@/components/SignaturePad";
+import { useToast } from "@/components/Toast";
 import Link from "next/link";
 import { useEffect, useRef, useCallback } from "react";
 
 export default function NewForm() {
   const router = useRouter();
+  const { toast } = useToast();
   const [videoState, setVideoState] = useState<"idle" | "recording" | "recorded">("idle");
   const [videoTimer, setVideoTimer] = useState(0);
   const videoIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [sending, setSending] = useState(false);
 
   const stopTimer = useCallback(() => {
     if (videoIntervalRef.current) {
@@ -63,20 +67,50 @@ export default function NewForm() {
 
   function update(field: string, value: string | boolean) {
     setForm(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => { const next = { ...prev }; delete next[field]; return next; });
+    }
+  }
+
+  function validate(): Record<string, string> {
+    const errs: Record<string, string> = {};
+    if (!form.patientName.trim()) errs.patientName = "Patient name is required";
+    if (!form.phone.trim()) errs.phone = "Contact number is required";
+    if (!form.operation.trim()) errs.operation = "Procedure name is required";
+    if (!form.diagnosis.trim()) errs.diagnosis = "Diagnosis is required";
+    if (!form.risks.trim()) errs.risks = "Risks must be listed";
+    if (!form.anesthesia.trim()) errs.anesthesia = "Anesthesia type is required";
+    if (!form.scheduledDate.trim()) errs.scheduledDate = "Scheduled date is required";
+    return errs;
   }
 
   function handleSubmit(draft: boolean) {
-    alert(draft ? "Saved as draft!" : "Consent form sent to patient for signature!");
-    router.push("/dashboard");
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      toast({ type: "error", message: "Please fill all required fields" });
+      const firstKey = Object.keys(errs)[0];
+      const el = document.querySelector(`[data-field="${firstKey}"]`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setSending(true);
+    setTimeout(() => {
+      setSending(false);
+      toast({ type: "success", message: draft ? "Saved as draft!" : "Consent form sent to patient for signature!" });
+      router.push("/dashboard");
+    }, 1500);
   }
 
-  const inputClass = "w-full border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent";
+  const inputBase = "w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent";
+  const inputClass = (field?: string) => `${inputBase} ${field && errors[field] ? "border-red-500" : "border-[var(--color-border)]"}`;
   const labelClass = "block text-sm font-medium mb-1.5";
+  const errorMsg = (field: string) => errors[field] ? <p role="alert" className="text-xs text-red-500 mt-1">{errors[field]}</p> : null;
 
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         <div className="px-8 py-4 border-b border-[var(--color-border)] bg-white">
           <div className="flex items-center gap-2 text-sm text-[var(--color-muted)]">
             <Link href="/dashboard" className="hover:text-[var(--color-primary)]">Dashboard</Link>
@@ -94,22 +128,22 @@ export default function NewForm() {
             <section className="bg-white border border-[var(--color-border)] rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Patient Information</h2>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className={labelClass}>Patient Name *</label><input className={inputClass} value={form.patientName} onChange={e => update("patientName", e.target.value)} placeholder="Full name" /></div>
-                <div><label className={labelClass}>Patient ID / UHID</label><input className={inputClass} value={form.patientId} onChange={e => update("patientId", e.target.value)} placeholder="APL-2026-XXXX" /></div>
-                <div><label className={labelClass}>Date of Birth *</label><input type="date" className={inputClass} value={form.dob} onChange={e => update("dob", e.target.value)} /></div>
+                <div data-field="patientName"><label className={labelClass}>Patient Name *</label><input className={inputClass("patientName")} aria-required="true" value={form.patientName} onChange={e => update("patientName", e.target.value)} placeholder="Full name" />{errorMsg("patientName")}</div>
+                <div><label className={labelClass}>Patient ID / UHID</label><input className={inputClass()} value={form.patientId} onChange={e => update("patientId", e.target.value)} placeholder="APL-2026-XXXX" /></div>
+                <div><label className={labelClass}>Date of Birth *</label><input type="date" className={inputClass()} aria-required="true" value={form.dob} onChange={e => update("dob", e.target.value)} /></div>
                 <div><label className={labelClass}>Gender *</label>
-                  <select className={inputClass} value={form.gender} onChange={e => update("gender", e.target.value)}>
+                  <select className={inputClass()} aria-required="true" value={form.gender} onChange={e => update("gender", e.target.value)}>
                     <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
                   </select>
                 </div>
-                <div><label className={labelClass}>Contact Number *</label><input className={inputClass} value={form.phone} onChange={e => update("phone", e.target.value)} placeholder="+91" /></div>
+                <div data-field="phone"><label className={labelClass}>Contact Number *</label><input className={inputClass("phone")} aria-required="true" value={form.phone} onChange={e => update("phone", e.target.value)} placeholder="+91" />{errorMsg("phone")}</div>
                 <div><label className={labelClass}>Blood Group</label>
-                  <select className={inputClass} value={form.bloodGroup} onChange={e => update("bloodGroup", e.target.value)}>
+                  <select className={inputClass()} value={form.bloodGroup} onChange={e => update("bloodGroup", e.target.value)}>
                     <option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
                   </select>
                 </div>
-                <div><label className={labelClass}>Emergency Contact</label><input className={inputClass} value={form.emergencyName} onChange={e => update("emergencyName", e.target.value)} placeholder="Name" /></div>
-                <div><label className={labelClass}>Emergency Phone</label><input className={inputClass} value={form.emergencyPhone} onChange={e => update("emergencyPhone", e.target.value)} placeholder="+91" /></div>
+                <div><label className={labelClass}>Emergency Contact</label><input className={inputClass()} value={form.emergencyName} onChange={e => update("emergencyName", e.target.value)} placeholder="Name" /></div>
+                <div><label className={labelClass}>Emergency Phone</label><input className={inputClass()} value={form.emergencyPhone} onChange={e => update("emergencyPhone", e.target.value)} placeholder="+91" /></div>
               </div>
             </section>
 
@@ -118,7 +152,7 @@ export default function NewForm() {
               <h2 className="text-lg font-semibold mb-4">Patient Language</h2>
               <div>
                 <label className={labelClass}>Select the language the patient is most comfortable with *</label>
-                <select className={inputClass} value={form.patientLanguage} onChange={e => update("patientLanguage", e.target.value)}>
+                <select className={inputClass()} value={form.patientLanguage} onChange={e => update("patientLanguage", e.target.value)}>
                   {[
                     "English", "Hindi (हिन्दी)", "Tamil (தமிழ்)", "Telugu (తెలుగు)", "Kannada (ಕನ್ನಡ)",
                     "Malayalam (മലയാളം)", "Bengali (বাংলা)", "Marathi (मराठी)", "Gujarati (ગુજરાતી)",
@@ -138,15 +172,16 @@ export default function NewForm() {
             <section className="bg-white border border-[var(--color-border)] rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Operation Details</h2>
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2"><label className={labelClass}>Operation / Procedure Name *</label><input className={inputClass} value={form.operation} onChange={e => update("operation", e.target.value)} placeholder="e.g. Laparoscopic Cholecystectomy" /></div>
-                <div><label className={labelClass}>Scheduled Date & Time *</label><input type="datetime-local" className={inputClass} value={form.scheduledDate} onChange={e => update("scheduledDate", e.target.value)} /></div>
-                <div><label className={labelClass}>Operating Surgeon</label><input className={inputClass} value={form.surgeon} onChange={e => update("surgeon", e.target.value)} /></div>
-                <div><label className={labelClass}>Anesthesia Type *</label>
-                  <select className={inputClass} value={form.anesthesia} onChange={e => update("anesthesia", e.target.value)}>
+                <div className="col-span-2" data-field="operation"><label className={labelClass}>Operation / Procedure Name *</label><input className={inputClass("operation")} aria-required="true" value={form.operation} onChange={e => update("operation", e.target.value)} placeholder="e.g. Laparoscopic Cholecystectomy" />{errorMsg("operation")}</div>
+                <div data-field="scheduledDate"><label className={labelClass}>Scheduled Date & Time *</label><input type="datetime-local" className={inputClass("scheduledDate")} aria-required="true" value={form.scheduledDate} onChange={e => update("scheduledDate", e.target.value)} />{errorMsg("scheduledDate")}</div>
+                <div><label className={labelClass}>Operating Surgeon</label><input className={inputClass()} value={form.surgeon} onChange={e => update("surgeon", e.target.value)} /></div>
+                <div data-field="anesthesia"><label className={labelClass}>Anesthesia Type *</label>
+                  <select className={inputClass("anesthesia")} aria-required="true" value={form.anesthesia} onChange={e => update("anesthesia", e.target.value)}>
                     <option value="">Select</option><option>General</option><option>Spinal</option><option>Local</option><option>Regional</option><option>Sedation</option>
                   </select>
+                  {errorMsg("anesthesia")}
                 </div>
-                <div><label className={labelClass}>Estimated Duration</label><input className={inputClass} value={form.duration} onChange={e => update("duration", e.target.value)} placeholder="e.g. 1.5 hours" /></div>
+                <div><label className={labelClass}>Estimated Duration</label><input className={inputClass()} value={form.duration} onChange={e => update("duration", e.target.value)} placeholder="e.g. 1.5 hours" /></div>
               </div>
             </section>
 
@@ -154,16 +189,16 @@ export default function NewForm() {
             <section className="bg-white border border-[var(--color-border)] rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Clinical Information</h2>
               <div className="space-y-4">
-                <div><label className={labelClass}>Diagnosis *</label><textarea className={inputClass} rows={2} value={form.diagnosis} onChange={e => update("diagnosis", e.target.value)} placeholder="Primary diagnosis" /></div>
-                <div><label className={labelClass}>Procedure Description (Patient-friendly) *</label><textarea className={inputClass} rows={4} value={form.procedureDescription} onChange={e => update("procedureDescription", e.target.value)} placeholder="Explain in simple language what will happen during the procedure" /></div>
-                <div><label className={labelClass}>Expected Benefits</label><textarea className={inputClass} rows={2} value={form.benefits} onChange={e => update("benefits", e.target.value)} /></div>
-                <div>
+                <div data-field="diagnosis"><label className={labelClass}>Diagnosis *</label><textarea className={inputClass("diagnosis")} rows={2} value={form.diagnosis} onChange={e => update("diagnosis", e.target.value)} placeholder="Primary diagnosis" />{errorMsg("diagnosis")}</div>
+                <div><label className={labelClass}>Procedure Description (Patient-friendly) *</label><textarea className={inputClass()} rows={4} value={form.procedureDescription} onChange={e => update("procedureDescription", e.target.value)} placeholder="Explain in simple language what will happen during the procedure" /></div>
+                <div><label className={labelClass}>Expected Benefits</label><textarea className={inputClass()} rows={2} value={form.benefits} onChange={e => update("benefits", e.target.value)} /></div>
+                <div data-field="risks">
                   <label className={labelClass}>Material Risks & Complications *</label>
-                  <textarea className={inputClass} rows={3} value={form.risks} onChange={e => update("risks", e.target.value)} placeholder="List each risk clearly" />
-                  <p className="text-xs text-[var(--color-muted)] mt-1">These will be shown to the patient. Be clear and specific.</p>
+                  <textarea className={inputClass("risks")} rows={3} value={form.risks} onChange={e => update("risks", e.target.value)} placeholder="List each risk clearly" />
+                  {errors.risks ? errorMsg("risks") : <p className="text-xs text-[var(--color-muted)] mt-1">These will be shown to the patient. Be clear and specific.</p>}
                 </div>
-                <div><label className={labelClass}>Alternative Treatments</label><textarea className={inputClass} rows={2} value={form.alternatives} onChange={e => update("alternatives", e.target.value)} /></div>
-                <div><label className={labelClass}>Consequences of Not Having Procedure</label><textarea className={inputClass} rows={2} value={form.consequences} onChange={e => update("consequences", e.target.value)} /></div>
+                <div><label className={labelClass}>Alternative Treatments</label><textarea className={inputClass()} rows={2} value={form.alternatives} onChange={e => update("alternatives", e.target.value)} /></div>
+                <div><label className={labelClass}>Consequences of Not Having Procedure</label><textarea className={inputClass()} rows={2} value={form.consequences} onChange={e => update("consequences", e.target.value)} /></div>
               </div>
             </section>
 
@@ -286,7 +321,7 @@ export default function NewForm() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className={labelClass}>Anesthesiologist Name *</label>
-                        <input className={inputClass} value={form.anesthesiologistName} onChange={e => update("anesthesiologistName", e.target.value)} placeholder="Dr. " />
+                        <input className={inputClass()} value={form.anesthesiologistName} onChange={e => update("anesthesiologistName", e.target.value)} placeholder="Dr. " />
                       </div>
                       <div>
                         <label className={labelClass}>Type of Anesthesia</label>
@@ -296,12 +331,12 @@ export default function NewForm() {
                     </div>
                     <div>
                       <label className={labelClass}>Anesthesia-Specific Risks *</label>
-                      <textarea className={inputClass} rows={3} value={form.anesthesiaRisks} onChange={e => update("anesthesiaRisks", e.target.value)} />
+                      <textarea className={inputClass()} rows={3} value={form.anesthesiaRisks} onChange={e => update("anesthesiaRisks", e.target.value)} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className={labelClass}>ASA Physical Status Classification *</label>
-                        <select className={inputClass} value={form.asaClassification} onChange={e => update("asaClassification", e.target.value)}>
+                        <select className={inputClass()} value={form.asaClassification} onChange={e => update("asaClassification", e.target.value)}>
                           <option value="">Select ASA Class</option>
                           <option value="ASA I">ASA I - Normal healthy patient</option>
                           <option value="ASA II">ASA II - Mild systemic disease</option>
@@ -397,21 +432,40 @@ export default function NewForm() {
               <h2 className="text-lg font-semibold mb-4">Send to Patient</h2>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <button
+                  disabled={sending}
                   onClick={() => handleSubmit(false)}
-                  className="border border-[var(--color-border)] rounded-lg p-4 hover:border-[var(--color-primary)] hover:bg-blue-50/50 transition-colors text-center"
+                  className="border border-[var(--color-border)] rounded-lg p-4 hover:border-[var(--color-primary)] hover:bg-blue-50/50 transition-colors text-center disabled:opacity-50"
                 >
-                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <svg className="w-5 h-5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                  </div>
-                  <p className="text-sm font-medium">Send via SMS</p>
+                  {sending ? (
+                    <div className="w-10 h-10 flex items-center justify-center mx-auto mb-2"><div className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" /></div>
+                  ) : (
+                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <svg className="w-5 h-5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </div>
+                  )}
+                  <p className="text-sm font-medium">{sending ? "Sending..." : "Send via SMS"}</p>
                   <p className="text-xs text-[var(--color-muted)] mt-0.5">Text link to patient</p>
                 </button>
                 <button
+                  disabled={sending}
                   onClick={() => {
-                    alert("Consent form saved! Redirecting to WhatsApp Bot to send...");
-                    router.push("/whatsapp");
+                    const errs = validate();
+                    if (Object.keys(errs).length > 0) {
+                      setErrors(errs);
+                      toast({ type: "error", message: "Please fill all required fields" });
+                      const firstKey = Object.keys(errs)[0];
+                      const el = document.querySelector(`[data-field="${firstKey}"]`);
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                      return;
+                    }
+                    setSending(true);
+                    setTimeout(() => {
+                      setSending(false);
+                      toast({ type: "success", message: "Consent form saved! Redirecting to WhatsApp Bot..." });
+                      router.push("/whatsapp");
+                    }, 1500);
                   }}
-                  className="border-2 border-[#25d366] rounded-lg p-4 hover:bg-green-50/50 transition-colors text-center relative"
+                  className="border-2 border-[#25d366] rounded-lg p-4 hover:bg-green-50/50 transition-colors text-center relative disabled:opacity-50"
                 >
                   <span className="absolute -top-2 -right-2 bg-[#25d366] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">NEW</span>
                   <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mx-auto mb-2">
@@ -421,8 +475,9 @@ export default function NewForm() {
                   <p className="text-xs text-[var(--color-muted)] mt-0.5">Instant delivery</p>
                 </button>
                 <button
+                  disabled={sending}
                   onClick={() => handleSubmit(false)}
-                  className="border border-[var(--color-border)] rounded-lg p-4 hover:border-[var(--color-primary)] hover:bg-blue-50/50 transition-colors text-center"
+                  className="border border-[var(--color-border)] rounded-lg p-4 hover:border-[var(--color-primary)] hover:bg-blue-50/50 transition-colors text-center disabled:opacity-50"
                 >
                   <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-2">
                     <svg className="w-5 h-5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
@@ -432,7 +487,7 @@ export default function NewForm() {
                 </button>
               </div>
               <div className="flex justify-between items-center pt-3 border-t border-[var(--color-border)]">
-                <button onClick={() => handleSubmit(true)} className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] font-medium">
+                <button disabled={sending} onClick={() => handleSubmit(true)} className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] font-medium disabled:opacity-50">
                   Save as Draft instead
                 </button>
                 <p className="text-xs text-[var(--color-muted)]">Patient will receive a secure link to review & sign</p>

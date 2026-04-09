@@ -6,10 +6,13 @@ import { getAllConsentForms, getDoctor } from "@/lib/auth";
 
 export default function OTBoard() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showF11Hint, setShowF11Hint] = useState(true);
 
   useEffect(() => {
+    document.title = "OT Board — MGMCRI";
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(interval);
+    const hintTimer = setTimeout(() => setShowF11Hint(false), 5000);
+    return () => { clearInterval(interval); clearTimeout(hintTimer); };
   }, []);
 
   const forms = getAllConsentForms("mgmcri");
@@ -66,7 +69,7 @@ export default function OTBoard() {
       {/* Top bar */}
       <div className="bg-[#151d2e] border-b border-gray-700/50 px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-[#0d9488] flex items-center justify-center">
             <span className="text-white text-xs font-bold">MG</span>
           </div>
           <span className="text-white font-semibold">MGMCRI</span>
@@ -77,12 +80,15 @@ export default function OTBoard() {
         </h1>
 
         <div className="flex items-center gap-6">
+          {showF11Hint && (
+            <span className="text-gray-500 text-xs animate-pulse transition-opacity">Press F11 for fullscreen</span>
+          )}
           <div className="text-right">
             <p className="text-white text-sm font-mono font-medium">
               {currentTime.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
             </p>
             <p className="text-gray-400 text-xs">
-              {currentTime.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+              {currentTime.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
             </p>
           </div>
           <Link

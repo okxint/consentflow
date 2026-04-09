@@ -1,13 +1,16 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
 import { SAMPLE_FORMS, getStatusConfig } from "@/lib/data";
+import { useToast } from "@/components/Toast";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ChevronRight, Download, Printer, Mail, AlertTriangle, CheckCircle, Clock, Send, FileText, QrCode, CloudUpload } from "lucide-react";
 
 export default function FormDetail() {
+  const { toast } = useToast();
   const [showTpaMenu, setShowTpaMenu] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const { id } = useParams();
   const form = SAMPLE_FORMS.find(f => f.id === id) || SAMPLE_FORMS[0];
   const status = getStatusConfig(form.status);
@@ -23,7 +26,7 @@ export default function FormDetail() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         <div className="px-8 py-4 border-b border-[var(--color-border)] bg-white">
           <div className="flex items-center gap-2 text-sm text-[var(--color-muted)] mb-2">
             <Link href="/dashboard" className="hover:text-[var(--color-primary)]">Dashboard</Link>
@@ -40,7 +43,7 @@ export default function FormDetail() {
         <div className="p-8 grid grid-cols-5 gap-6">
           {/* PDF Preview */}
           <div className="col-span-3 bg-white border border-[var(--color-border)] rounded-lg p-8">
-            <div className="border border-gray-200 rounded p-8 bg-white">
+            <div ref={printRef} className="print-area border border-gray-200 rounded p-8 bg-white">
               {/* Letterhead */}
               <div className="text-center border-b-2 border-[var(--color-primary)] pb-4 mb-6">
                 <h2 className="text-xl font-bold text-[var(--color-primary)]">MGMCRI</h2>
@@ -144,10 +147,24 @@ export default function FormDetail() {
             <div className="bg-white border border-[var(--color-border)] rounded-lg p-5">
               <h3 className="font-semibold mb-3">Actions</h3>
               <div className="space-y-2">
-                <button className="w-full flex items-center gap-2 justify-center bg-[var(--color-primary)] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
+                <button
+                  onClick={() => {
+                    if (!printRef.current) return;
+                    const printWindow = window.open("", "_blank");
+                    if (!printWindow) return;
+                    printWindow.document.write(`<!DOCTYPE html><html><head><title>Consent Form - ${form.patientName}</title><style>body{font-family:Inter,system-ui,sans-serif;color:#0f172a;margin:0;padding:32px}h2{color:#0d9488}.sig-line{border-bottom:1px solid #d1d5db;height:48px;margin-bottom:4px;display:flex;align-items:flex-end;justify-content:center}p,span{font-size:14px}.text-xs{font-size:12px}.font-semibold{font-weight:600}.font-medium{font-weight:500}</style></head><body>${printRef.current.innerHTML}</body></html>`);
+                    printWindow.document.close();
+                    printWindow.focus();
+                    setTimeout(() => printWindow.print(), 300);
+                  }}
+                  className="w-full flex items-center gap-2 justify-center bg-[var(--color-primary)] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]"
+                >
                   <Download className="w-4 h-4" /> Download PDF
                 </button>
-                <button className="w-full flex items-center gap-2 justify-center border border-[var(--color-border)] py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50">
+                <button
+                  onClick={() => window.print()}
+                  className="w-full flex items-center gap-2 justify-center border border-[var(--color-border)] py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50"
+                >
                   <Printer className="w-4 h-4" /> Print Form
                 </button>
                 <button className="w-full flex items-center gap-2 justify-center border border-[var(--color-border)] py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50">

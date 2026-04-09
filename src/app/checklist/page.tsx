@@ -265,13 +265,13 @@ export default function ChecklistPage() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         <div className="max-w-3xl mx-auto py-8 px-4">
           <h1 className="text-2xl font-bold mb-1">Surgical Safety Checklist</h1>
           <p className="text-[var(--color-text-secondary)] text-sm mb-6">WHO format — NABH Required</p>
 
           {/* Patient Info Bar */}
-          <div className="bg-white border border-[var(--color-border)] rounded-lg p-4 mb-6 grid grid-cols-4 gap-4">
+          <div className="bg-white border border-[var(--color-border)] rounded-lg p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <p className="text-xs text-[var(--color-muted)] uppercase tracking-wide">Patient</p>
               <p className="text-sm font-semibold">Rajesh Kumar</p>

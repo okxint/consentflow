@@ -2,16 +2,20 @@
 import { Sidebar } from "@/components/Sidebar";
 import { useState } from "react";
 import { Upload, Eye, Download, CheckCircle, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 const tabs = ["Hospital Profile", "Users & Roles", "Notifications", "Compliance", "Integrations"];
 
 export default function Settings() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("Hospital Profile");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [testingConnection, setTestingConnection] = useState(false);
 
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-8">
           <h1 className="text-2xl font-bold mb-6">Settings</h1>
 
@@ -95,8 +99,19 @@ export default function Settings() {
                 </div>
 
                 <div className="flex justify-end">
-                  <button className="bg-[var(--color-primary)] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
-                    Save Changes
+                  <button
+                    disabled={savingSettings}
+                    onClick={() => {
+                      setSavingSettings(true);
+                      setTimeout(() => {
+                        setSavingSettings(false);
+                        toast({ type: "success", message: "Settings saved" });
+                      }, 1500);
+                    }}
+                    className="bg-[var(--color-primary)] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {savingSettings && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />}
+                    {savingSettings ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </div>
@@ -186,8 +201,19 @@ export default function Settings() {
                       <input className="w-full border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm" placeholder="Enter HIP ID" />
                     </div>
                   </div>
-                  <button className="inline-flex items-center gap-2 border border-[var(--color-primary)] text-[var(--color-primary)] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-light)]">
-                    Test Connection
+                  <button
+                    disabled={testingConnection}
+                    onClick={() => {
+                      setTestingConnection(true);
+                      setTimeout(() => {
+                        setTestingConnection(false);
+                        toast({ type: "success", message: "Connection successful" });
+                      }, 1500);
+                    }}
+                    className="inline-flex items-center gap-2 border border-[var(--color-primary)] text-[var(--color-primary)] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-light)] disabled:opacity-50"
+                  >
+                    {testingConnection && <div className="w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />}
+                    {testingConnection ? "Testing..." : "Test Connection"}
                   </button>
                 </div>
               </div>

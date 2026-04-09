@@ -33,3 +33,49 @@ body {
   50% { transform: scale(1.1); opacity: 0.5; }
   100% { transform: scale(0.95); opacity: 1; }
 }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+main, [data-page] {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@media print {
+  /* Hide non-essential elements */
+  nav, aside, header, footer, button, .no-print {
+    display: none !important;
+  }
+
+  /* Full width content */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    animation: none !important;
+  }
+
+  /* Reset backgrounds for paper */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Show print area */
+  .print-area {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+  }
+}

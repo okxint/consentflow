@@ -182,9 +182,6 @@ const consentRecords: ConsentRecord[] = [
   },
 ];
 
-// --- Module-level state for current doctor ---
-let currentDoctorId = "dr-vishnu";
-
 // --- Exported functions ---
 
 export function getHospital(id?: string): Hospital {
@@ -220,11 +217,26 @@ export function getAllConsentForms(hospitalId: string): ConsentRecord[] {
 }
 
 export function getCurrentDoctor(): Doctor {
-  return doctors.find((d) => d.id === currentDoctorId) || doctors[0];
+  let doctorId = "dr-vishnu";
+  try {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("consentflow_doctor");
+      if (stored) doctorId = stored;
+    }
+  } catch {
+    // SSR or localStorage unavailable
+  }
+  return doctors.find((d) => d.id === doctorId) || doctors[0];
 }
 
 export function setCurrentDoctor(id: string): void {
-  currentDoctorId = id;
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("consentflow_doctor", id);
+    }
+  } catch {
+    // SSR or localStorage unavailable
+  }
 }
 
 export function getConsentStatusConfig(status: ConsentRecord["status"]) {

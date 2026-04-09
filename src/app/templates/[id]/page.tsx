@@ -1358,7 +1358,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         {/* Breadcrumb */}
         <div className="px-8 py-4 border-b border-[var(--color-border)] bg-white">
           <div className="flex items-center gap-2 text-sm text-[var(--color-muted)]">

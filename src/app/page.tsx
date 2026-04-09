@@ -43,7 +43,7 @@ function WhatsAppDemo() {
   }, [step]);
 
   return (
-    <div className="w-full max-w-xs mx-auto">
+    <div className="w-full max-w-[260px] sm:max-w-xs mx-auto">
       <div className="bg-white rounded-2xl overflow-hidden shadow-lg shadow-black/10 border border-gray-200/60">
         <div className="bg-[#075e54] px-4 py-3 flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center">
@@ -147,7 +147,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* ── Floating Pill Navbar ── */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4">
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] sm:w-full sm:max-w-2xl px-4">
         <div className="flex items-center justify-between bg-white/85 backdrop-blur-xl border border-gray-300 rounded-full px-5 py-2.5 shadow-lg shadow-black/10">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-full bg-teal-600 flex items-center justify-center">
@@ -163,7 +163,7 @@ export default function Home() {
           </div>
 
           <Link href="/login" className="bg-gray-900 text-white h-9 px-3 rounded-full text-sm font-medium flex items-center hover:bg-gray-800 transition-colors">
-            Doctor Login
+            <span className="hidden sm:inline">Doctor </span>Login
           </Link>
         </div>
       </nav>
@@ -177,9 +177,9 @@ export default function Home() {
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M0 40V0h40' fill='none' stroke='white' stroke-width='.5'/%3E%3C/svg%3E\")" }} />
 
           <div className="relative max-w-6xl mx-auto px-6 py-20 pb-24">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
               {/* Left — text on dark */}
-              <div className="max-w-lg">
+              <div className="max-w-lg mx-auto md:mx-0 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full text-sm font-medium text-teal-300 mb-8">
                   <Shield className="w-3.5 h-3.5" />
                   IT Act 2000 Compliant
@@ -195,7 +195,7 @@ export default function Home() {
                   Doctors create consent forms. Assistants send them via WhatsApp. Patients review, record a video KYC, and sign — all from their phone.
                 </p>
 
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-4 mb-6 justify-center md:justify-start">
                   <Link href="/login" className="inline-flex items-center gap-2 bg-teal-600 text-white h-11 px-8 rounded-full font-medium text-sm hover:bg-teal-700 transition-colors">
                     Doctor Login <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -204,7 +204,7 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-5 justify-center md:justify-start flex-wrap">
                   {["IT Act 2000", "Video KYC", "22 Languages"].map((item) => (
                     <span key={item} className="flex items-center gap-1.5 text-xs text-gray-500">
                       <CheckCircle className="w-3.5 h-3.5 text-teal-500" />
@@ -416,7 +416,7 @@ export default function Home() {
             <p className="text-gray-500 font-light mt-3">No monthly fees. You pay only for what you use.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 name: "Essential",
@@ -489,9 +489,9 @@ export default function Home() {
 
                 <div className="mb-1">
                   <span className="text-4xl font-bold text-gray-900">{p.price}</span>
-                  <span className="text-sm ml-1 text-gray-400">{p.unit}</span>
+                  <span className="text-sm ml-1 text-gray-500">{p.unit}</span>
                 </div>
-                <p className="text-xs text-gray-400 mb-6 flex items-center gap-1">
+                <p className="text-xs text-gray-500 mb-6 flex items-center gap-1">
                   <Database className="w-3 h-3" />
                   Storage: {p.storage}
                 </p>
@@ -519,7 +519,7 @@ export default function Home() {
             ))}
           </div>
 
-          <p className="text-center text-xs text-gray-400 mt-8">
+          <p className="text-center text-xs text-gray-500 mt-8">
             All plans include: Video KYC, HIPAA compliance, IT Act 2000 compliance, encrypted storage, QR verification
           </p>
         </div>
@@ -543,15 +543,15 @@ export default function Home() {
 
       {/* ── Footer ── */}
       <footer className="bg-gray-50 border-t border-gray-200 py-10">
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center">
               <FileText className="w-3 h-3 text-white" />
             </div>
             <span className="font-semibold text-sm text-gray-900">ConsentFlow</span>
           </div>
-          <p className="text-sm text-gray-400">&copy; 2026 ConsentFlow. All rights reserved.</p>
-          <div className="flex gap-6 text-sm text-gray-400">
+          <p className="text-sm text-gray-500">&copy; 2026 ConsentFlow. All rights reserved.</p>
+          <div className="flex gap-6 text-sm text-gray-500">
             <a href="#" className="hover:text-gray-600 transition-colors">Privacy</a>
             <a href="#" className="hover:text-gray-600 transition-colors">Terms</a>
             <a href="#" className="hover:text-gray-600 transition-colors">Contact</a>

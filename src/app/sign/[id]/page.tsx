@@ -2,11 +2,13 @@
 import { SAMPLE_FORMS } from "@/lib/data";
 import { SignaturePad } from "@/components/SignaturePad";
 import { VideoConsent } from "@/components/VideoConsent";
+import { useToast } from "@/components/Toast";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CheckCircle, ChevronDown, ChevronUp, FileText, Shield } from "lucide-react";
 
 export default function PatientSign() {
+  const { toast } = useToast();
   const { id } = useParams();
   const form = SAMPLE_FORMS.find(f => f.id === id) || SAMPLE_FORMS[0];
   const [step, setStep] = useState(1);
@@ -17,6 +19,7 @@ export default function PatientSign() {
   const [witnessRelation, setWitnessRelation] = useState("");
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [expanded, setExpanded] = useState<string | null>("procedure");
   const [language, setLanguage] = useState("English");
   const [signMode, setSignMode] = useState<"aadhaar" | "manual">("aadhaar");
@@ -343,11 +346,23 @@ export default function PatientSign() {
             <div className="flex justify-between">
               <button onClick={() => setStep(2)} className="border border-[var(--color-border)] px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50">Back</button>
               <button
-                onClick={() => setSubmitted(true)}
-                disabled={!canSubmit}
+                onClick={() => {
+                  setSubmitting(true);
+                  setTimeout(() => {
+                    setSubmitting(false);
+                    setSubmitted(true);
+                    toast({ type: "success", message: "Consent submitted successfully!" });
+                  }, 2000);
+                }}
+                disabled={!canSubmit || submitting}
                 className="bg-[var(--color-success)] text-white px-8 py-3 rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <CheckCircle className="w-4 h-4" /> Submit Consent
+                {submitting ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />
+                ) : (
+                  <CheckCircle className="w-4 h-4" />
+                )}
+                {submitting ? "Submitting..." : "Submit Consent"}
               </button>
             </div>
           </div>

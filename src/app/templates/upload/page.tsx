@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { ChevronRight, Upload, FileImage, FileText, X, Sparkles, Check, Loader2, Eye, Pencil, GripVertical, Plus, Trash2, Type, ToggleLeft, AlignLeft, List, Calendar, ChevronDown, ChevronUp, Save } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 type FieldType = "text" | "textarea" | "date" | "checkbox" | "select" | "signature";
 
@@ -26,6 +27,7 @@ const FIELD_ICONS: Record<FieldType, typeof Type> = {
 };
 
 export default function UploadTemplate() {
+  const { toast } = useToast();
   const [step, setStep] = useState<"upload" | "processing" | "review" | "customize">("upload");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -136,7 +138,7 @@ export default function UploadTemplate() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         <div className="px-8 py-4 border-b border-[var(--color-border)] bg-white">
           <div className="flex items-center gap-2 text-sm text-[var(--color-muted)]">
             <Link href="/templates" className="hover:text-[var(--color-primary)]">Templates</Link>
@@ -475,7 +477,7 @@ export default function UploadTemplate() {
                   </button>
                   <button
                     onClick={() => {
-                      alert(`Template "${templateName}" saved with ${detectedFields.length} fields!`);
+                      toast({ type: "success", message: `Template "${templateName}" saved with ${detectedFields.length} fields!` });
                       window.location.href = "/templates";
                     }}
                     className="px-6 py-2.5 bg-[var(--color-primary)] text-white rounded-lg text-sm font-semibold hover:bg-[var(--color-primary-hover)] flex items-center gap-2"

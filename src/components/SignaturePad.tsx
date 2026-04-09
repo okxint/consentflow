@@ -69,6 +69,7 @@ export function SignaturePad({ label, onSave, height = 200 }: Props) {
           ref={canvasRef}
           width={600}
           height={height}
+          aria-label="Signature drawing area"
           className="w-full cursor-crosshair touch-none"
           style={{ height }}
           onMouseDown={startDraw}

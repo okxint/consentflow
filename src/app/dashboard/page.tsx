@@ -1,12 +1,22 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
 import { getCurrentDoctor, getConsentForms, getConsentStatusConfig } from "@/lib/auth";
+import { useToast } from "@/components/Toast";
 import Link from "next/link";
-import { Plus, FileText, Clock, CheckCircle, AlertTriangle, Eye, Download, Send, Pencil, Trash2, RefreshCw, Bell, Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, FileText, Clock, CheckCircle, AlertTriangle, Eye, Download, Send, Pencil, Trash2, RefreshCw, Bell, Search, ClipboardList } from "lucide-react";
 
 export default function Dashboard() {
+  const { toast } = useToast();
   const doctor = getCurrentDoctor();
   const forms = getConsentForms(doctor.id);
+  const [loading, setLoading] = useState(true);
+  const [sendingReminder, setSendingReminder] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const stats = [
     { label: "Total Forms", value: forms.length, icon: FileText, color: "text-[var(--color-primary)]", bg: "bg-blue-50" },
@@ -32,7 +42,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <header className="border-b border-[var(--color-border)] px-8 py-4 flex items-center justify-between bg-white">
           <div />
           <div className="flex items-center gap-4">
@@ -50,6 +60,38 @@ export default function Dashboard() {
         </header>
 
         <div className="p-8">
+          {loading ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="h-7 bg-gray-200 rounded animate-pulse w-64 mb-2" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-48" />
+                </div>
+                <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-44" />
+              </div>
+              <div className="grid grid-cols-4 gap-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="bg-white border border-[var(--color-border)] rounded-lg p-5">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4 mb-3" />
+                    <div className="h-8 bg-gray-200 rounded animate-pulse w-1/3" />
+                  </div>
+                ))}
+              </div>
+              <div className="bg-white border border-[var(--color-border)] rounded-lg p-5">
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-32 mb-4" />
+                <div className="space-y-3">
+                  {[1,2,3].map(i => <div key={i} className="h-4 bg-gray-200 rounded animate-pulse w-full" />)}
+                </div>
+              </div>
+              <div className="bg-white border border-[var(--color-border)] rounded-lg p-5">
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-32 mb-4" />
+                <div className="space-y-3">
+                  {[1,2,3,4,5].map(i => <div key={i} className="h-10 bg-gray-200 rounded animate-pulse w-full" />)}
+                </div>
+              </div>
+            </div>
+          ) : (
+          <>
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold">Welcome, {doctor.name}</h1>
@@ -60,7 +102,7 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {stats.map((s) => (
               <div key={s.label} className="bg-white border border-[var(--color-border)] rounded-lg p-5">
                 <div className="flex items-center justify-between mb-3">
@@ -92,9 +134,23 @@ export default function Dashboard() {
                         <span className="text-amber-600 font-medium">No response</span>
                       </span>
                     </div>
-                    <button className="text-xs font-medium text-[var(--color-primary)] bg-teal-50 px-3 py-1.5 rounded-lg hover:bg-teal-100 transition-colors flex items-center gap-1.5">
-                      <Send className="w-3 h-3" />
-                      Send Reminder
+                    <button
+                      disabled={sendingReminder === form.id}
+                      onClick={() => {
+                        setSendingReminder(form.id);
+                        setTimeout(() => {
+                          setSendingReminder(null);
+                          toast({ type: "success", message: `Reminder sent to ${form.patientName}` });
+                        }, 1500);
+                      }}
+                      className="text-xs font-medium text-[var(--color-primary)] bg-teal-50 px-3 py-1.5 rounded-lg hover:bg-teal-100 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                    >
+                      {sendingReminder === form.id ? (
+                        <div className="w-3 h-3 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />
+                      ) : (
+                        <Send className="w-3 h-3" />
+                      )}
+                      {sendingReminder === form.id ? "Sending..." : "Send Reminder"}
                     </button>
                   </div>
                 ))}
@@ -118,6 +174,7 @@ export default function Dashboard() {
                 </select>
               </div>
             </div>
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[var(--color-border)] text-left text-sm text-[var(--color-text-secondary)]">
@@ -157,8 +214,22 @@ export default function Dashboard() {
                             </button>
                           )}
                           {form.status === "pending_patient" && (
-                            <button className="p-1.5 hover:bg-gray-100 rounded-md" title="Send Reminder">
-                              <Send className="w-4 h-4 text-gray-500" />
+                            <button
+                              onClick={() => {
+                                setSendingReminder(form.id);
+                                setTimeout(() => {
+                                  setSendingReminder(null);
+                                  toast({ type: "success", message: `Reminder sent to ${form.patientName}` });
+                                }, 1500);
+                              }}
+                              disabled={sendingReminder === form.id}
+                              className="p-1.5 hover:bg-gray-100 rounded-md" title="Send Reminder"
+                            >
+                              {sendingReminder === form.id ? (
+                                <div className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />
+                              ) : (
+                                <Send className="w-4 h-4 text-gray-500" />
+                              )}
                             </button>
                           )}
                           {form.status === "draft" && (
@@ -183,14 +254,22 @@ export default function Dashboard() {
                 })}
                 {forms.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-8 text-center text-sm text-[var(--color-muted)]">
-                      No consent forms yet. Create your first one.
+                    <td colSpan={5} className="px-5 py-16 text-center">
+                      <ClipboardList className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                      <p className="font-semibold text-gray-900 mb-1">No consent forms yet</p>
+                      <p className="text-sm text-[var(--color-muted)] mb-4">Create your first consent form to get started.</p>
+                      <Link href="/forms/new" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors">
+                        <Plus className="w-4 h-4" /> New Consent Form
+                      </Link>
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+            </div>
           </div>
+          </>
+          )}
         </div>
       </main>
     </div>

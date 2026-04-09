@@ -16,7 +16,7 @@ export default function Patients() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -40,6 +40,7 @@ export default function Patients() {
           </div>
 
           <div className="bg-white border border-[var(--color-border)] rounded-lg">
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[var(--color-border)] text-left text-sm text-[var(--color-text-secondary)]">
@@ -81,7 +82,7 @@ export default function Patients() {
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <button className="p-1.5 hover:bg-gray-100 rounded-md"><ChevronRight className="w-4 h-4 text-gray-400" /></button>
+                      <button className="p-1.5 hover:bg-gray-100 rounded-md" title="View patient details" aria-label="View patient details"><ChevronRight className="w-4 h-4 text-gray-400" /></button>
                     </td>
                   </tr>
                 ))}
@@ -94,7 +95,14 @@ export default function Patients() {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
+
+          {patients.length <= 2 && (
+            <p className="text-center text-sm text-[var(--color-muted)] mt-6">
+              Patients are added automatically when consent forms are created.
+            </p>
+          )}
         </div>
       </main>
     </div>

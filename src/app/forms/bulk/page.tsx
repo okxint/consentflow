@@ -2,6 +2,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import { useState } from "react";
 import { Upload, Download, Plus, Trash2, CheckCircle, AlertCircle, Send } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface BulkRow {
   patientName: string;
@@ -27,6 +28,7 @@ interface CsvRow extends BulkRow {
 }
 
 export default function BulkCreate() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"quick" | "csv">("quick");
   const [rows, setRows] = useState<BulkRow[]>([emptyRow(), emptyRow(), emptyRow(), emptyRow(), emptyRow()]);
   const [csvData, setCsvData] = useState<CsvRow[] | null>(null);
@@ -93,7 +95,7 @@ export default function BulkCreate() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         <div className="p-8">
           <div className="mb-8">
             <h1 className="text-2xl font-bold">Bulk Consent Creation</h1>
@@ -185,7 +187,7 @@ export default function BulkCreate() {
                 </div>
                 <button
                   disabled={filledCount === 0}
-                  onClick={() => alert(`Creating ${filledCount} consent forms and sending via WhatsApp...`)}
+                  onClick={() => toast({ type: "success", message: `Creating ${filledCount} consent forms and sending via WhatsApp...` })}
                   className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <Send className="w-4 h-4" /> Create All & Send via WhatsApp
@@ -236,6 +238,7 @@ export default function BulkCreate() {
                       )}
                     </div>
                   </div>
+                  <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-[var(--color-border)] text-left text-xs text-[var(--color-text-secondary)] uppercase tracking-wide">
@@ -268,10 +271,11 @@ export default function BulkCreate() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                   <div className="px-5 py-4 border-t border-[var(--color-border)] flex justify-end">
                     <button
                       disabled={csvData.filter(r => r.valid).length === 0}
-                      onClick={() => alert(`Creating ${csvData.filter(r => r.valid).length} consent forms...`)}
+                      onClick={() => toast({ type: "success", message: `Creating ${csvData.filter(r => r.valid).length} consent forms...` })}
                       className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     >
                       Create All

@@ -120,7 +120,7 @@ export default function Templates() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>

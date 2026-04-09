@@ -6,7 +6,7 @@ export default function Reports() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -19,12 +19,10 @@ export default function Reports() {
           </div>
 
           {/* Empty state */}
-          <div className="bg-white border border-[var(--color-border)] rounded-lg p-12 text-center mb-8">
-            <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BarChart3 className="w-7 h-7 text-gray-400" />
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-1">No report data yet</h3>
-            <p className="text-sm text-[var(--color-text-secondary)]">Reports will populate as you create consent forms</p>
+          <div className="border-2 border-dashed border-gray-200 rounded-lg p-16 text-center mb-8">
+            <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="font-semibold text-gray-900 text-lg mb-2">No report data yet</h3>
+            <p className="text-sm text-[var(--color-text-secondary)] max-w-md mx-auto">Reports will generate automatically as consent forms are created and signed.</p>
           </div>
 
           {/* NABH Compliance Dashboard */}
@@ -35,7 +33,7 @@ export default function Reports() {
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] mb-6">COP.5 &amp; COP.6 Audit Readiness</p>
 
-            <div className="grid grid-cols-5 gap-6 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-8">
               {/* Circular progress */}
               <div className="flex flex-col items-center justify-center">
                 <div className="relative w-28 h-28">
@@ -74,6 +72,7 @@ export default function Reports() {
 
             {/* Audit Checklist Table */}
             <h3 className="font-semibold mb-3">Audit Checklist — COP.5 (Informed Consent)</h3>
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-sm text-[var(--color-text-secondary)] border-b border-[var(--color-border)]">
@@ -112,6 +111,7 @@ export default function Reports() {
                 ))}
               </tbody>
             </table>
+            </div>
 
             <div className="mt-6">
               <button className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">

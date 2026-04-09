@@ -2,14 +2,18 @@
 import { Sidebar } from "@/components/Sidebar";
 import { useState } from "react";
 import { AlertTriangle, Clock } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 export default function EmergencyPage() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"emergency" | "mlc">("emergency");
   const [unknownPatient, setUnknownPatient] = useState(false);
   const [authMethod, setAuthMethod] = useState<"kin" | "twodoctor">("kin");
   const [doctorCertify1, setDoctorCertify1] = useState(false);
   const [doctorCertify2, setDoctorCertify2] = useState(false);
   const [photosTaken, setPhotosTaken] = useState(false);
+  const [submittingEmergency, setSubmittingEmergency] = useState(false);
+  const [submittingMlc, setSubmittingMlc] = useState(false);
 
   const [form, setForm] = useState({
     patientName: "",
@@ -43,7 +47,7 @@ export default function EmergencyPage() {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-[var(--color-card)]">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-[var(--color-card)]">
         <div className="max-w-3xl mx-auto py-8 px-4">
           {/* Header */}
           <div className="flex items-center gap-3 mb-1">
@@ -205,10 +209,18 @@ export default function EmergencyPage() {
               </section>
 
               <button
-                onClick={() => alert("Emergency consent documented successfully!")}
-                className="w-full bg-red-500 text-white py-3 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
+                disabled={submittingEmergency}
+                onClick={() => {
+                  setSubmittingEmergency(true);
+                  setTimeout(() => {
+                    setSubmittingEmergency(false);
+                    toast({ type: "success", message: "Emergency consent documented successfully!" });
+                  }, 1500);
+                }}
+                className="w-full bg-red-500 text-white py-3 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Document Emergency Consent
+                {submittingEmergency && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />}
+                {submittingEmergency ? "Documenting..." : "Document Emergency Consent"}
               </button>
             </div>
           )}
@@ -271,10 +283,18 @@ export default function EmergencyPage() {
               </section>
 
               <button
-                onClick={() => alert("MLC report generated successfully!")}
-                className="w-full bg-red-500 text-white py-3 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
+                disabled={submittingMlc}
+                onClick={() => {
+                  setSubmittingMlc(true);
+                  setTimeout(() => {
+                    setSubmittingMlc(false);
+                    toast({ type: "success", message: "MLC report generated successfully!" });
+                  }, 1500);
+                }}
+                className="w-full bg-red-500 text-white py-3 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Generate MLC Report
+                {submittingMlc && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-[spin_1s_linear_infinite]" />}
+                {submittingMlc ? "Generating..." : "Generate MLC Report"}
               </button>
             </div>
           )}
