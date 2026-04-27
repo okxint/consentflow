@@ -107,6 +107,105 @@ function WhatsAppDemo() {
   );
 }
 
+/* ─── WhatsApp Template Fill Demo ─── */
+function WhatsAppTemplateFillDemo() {
+  const [step, setStep] = useState(0);
+  const [started, setStarted] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const messages = [
+    { from: "bot" as const, text: "Hello Selvam! \ud83d\udc4b\n\nDr. Vishnu has requested your consent for:\n\ud83c\udfe5 Wound Debridement\n\nI'll ask you a few questions to fill your consent form. Ready?", delay: 0 },
+    { from: "patient" as const, text: "Yes, ready", delay: 1800 },
+    { from: "bot" as const, text: "Great! Let's start.\n\n1\ufe0f\u20e3 What is your full name as per Aadhaar?", delay: 2800 },
+    { from: "patient" as const, text: "Selvam Murugan", delay: 4000 },
+    { from: "bot" as const, text: "2\ufe0f\u20e3 Date of birth? (DD/MM/YYYY)", delay: 5000 },
+    { from: "patient" as const, text: "15/03/1985", delay: 6200 },
+    { from: "bot" as const, text: "3\ufe0f\u20e3 Do you have any allergies?\n(medicines, food, latex, etc.)", delay: 7200 },
+    { from: "patient" as const, text: "No known allergies", delay: 8400 },
+    { from: "bot" as const, text: "4\ufe0f\u20e3 Blood group?", delay: 9200 },
+    { from: "patient" as const, text: "B+", delay: 10200 },
+    { from: "bot" as const, text: "\u2705 All details collected!\n\n\ud83d\udcc4 Generating your consent PDF...", delay: 11200 },
+    { from: "bot" as const, text: "\ud83d\udcce consent_selvam_wound_debridement.pdf\n\n\u2705 Your consent form is ready!\nPlease review and sign using the link below:\n\n\ud83d\udd17 Sign now: consent.flow/s/CF-9281\n\n\u23f0 Valid for 24 hours", delay: 12800 },
+  ];
+
+  useEffect(() => {
+    if (!started || step >= messages.length) return;
+    const timer = setTimeout(() => setStep((s) => s + 1), messages[step].delay ? 1400 : 1000);
+    return () => clearTimeout(timer);
+  }, [step, started, messages.length]);
+
+  useEffect(() => {
+    const el = chatEndRef.current;
+    if (el?.parentElement) {
+      el.parentElement.scrollTop = el.parentElement.scrollHeight;
+    }
+  }, [step]);
+
+  return (
+    <div className="w-full max-w-[260px] sm:max-w-xs mx-auto">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-lg shadow-black/10 border border-gray-200/60">
+        <div className="bg-[#075e54] px-4 py-3 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center">
+            <MessageCircle className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-[13px] text-white">ConsentFlow Bot</p>
+            <p className="text-[10px] text-green-200">online</p>
+          </div>
+        </div>
+
+        <div className="h-72 overflow-y-auto p-3 space-y-2 scroll-smooth" style={{ background: "#ece5dd" }}>
+          {!started && (
+            <div className="h-full flex flex-col items-center justify-center">
+              <button
+                onClick={() => { setStarted(true); setStep(1); }}
+                className="bg-[#25d366] text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#1da851] transition-all hover:scale-105 shadow-lg shadow-green-500/20"
+              >
+                \u25b6 Play Demo
+              </button>
+              <p className="text-[11px] text-gray-500 mt-2 text-center">See template filled via WhatsApp chat</p>
+            </div>
+          )}
+
+          {started && messages.slice(0, step).map((msg, i) => (
+            <div key={i} className={`flex ${msg.from === "patient" ? "justify-end" : "justify-start"}`} style={{ animation: "fadeSlideUp 0.3s ease-out" }}>
+              <div className={`max-w-[82%] rounded-lg px-2.5 py-1.5 shadow-sm text-[12px] leading-relaxed ${msg.from === "patient" ? "bg-[#dcf8c6] rounded-tr-none" : "bg-white rounded-tl-none"}`}>
+                {msg.from === "bot" && <p className="text-[9px] font-bold text-[#075e54] mb-0.5">ConsentFlow Bot</p>}
+                <p className="whitespace-pre-wrap">{msg.text}</p>
+                <div className="flex items-center justify-end gap-0.5 mt-0.5">
+                  <span className="text-[9px] text-gray-500">now</span>
+                  {msg.from === "patient" && <CheckCheck className="w-3 h-3 text-blue-500" />}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {started && step > 0 && step < messages.length && (
+            <div className="flex justify-start">
+              <div className="bg-white rounded-lg rounded-tl-none px-3 py-2 shadow-sm">
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {started && step >= messages.length && (
+            <div className="flex justify-center pt-1">
+              <button onClick={() => { setStep(0); setStarted(false); }} className="text-[11px] text-[#075e54] bg-white/80 px-3 py-1 rounded-full hover:bg-white">
+                \u21bb Replay
+              </button>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Timeline Step Card ─── */
 function TimelineCard({
   number,
@@ -176,10 +275,10 @@ export default function Home() {
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M0 40V0h40' fill='none' stroke='white' stroke-width='.5'/%3E%3C/svg%3E\")" }} />
 
-          <div className="relative max-w-6xl mx-auto px-6 py-20 pb-24">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+          <div className="relative max-w-7xl mx-auto px-6 py-20 pb-24">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10 lg:gap-12 items-center">
               {/* Left — text on dark */}
-              <div className="max-w-lg mx-auto md:mx-0 text-center md:text-left">
+              <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
                 <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full text-sm font-medium text-teal-300 mb-8">
                   <Shield className="w-3.5 h-3.5" />
                   IT Act 2000 Compliant
@@ -195,7 +294,7 @@ export default function Home() {
                   Doctors create consent forms. Assistants send them via WhatsApp. Patients review, record a video KYC, and sign — all from their phone.
                 </p>
 
-                <div className="flex items-center gap-4 mb-6 justify-center md:justify-start">
+                <div className="flex items-center gap-4 mb-6 justify-center lg:justify-start">
                   <Link href="/login" className="inline-flex items-center gap-2 bg-teal-600 text-white h-11 px-8 rounded-full font-medium text-sm hover:bg-teal-700 transition-colors">
                     Doctor Login <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -204,7 +303,7 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <div className="flex items-center gap-5 justify-center md:justify-start flex-wrap">
+                <div className="flex items-center gap-5 justify-center lg:justify-start flex-wrap">
                   {["IT Act 2000", "Video KYC", "22 Languages"].map((item) => (
                     <span key={item} className="flex items-center gap-1.5 text-xs text-gray-500">
                       <CheckCircle className="w-3.5 h-3.5 text-teal-500" />
@@ -214,9 +313,16 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right — WhatsApp demo */}
-              <div className="flex justify-center">
-                <WhatsAppDemo />
+              {/* Right — WhatsApp demos side by side */}
+              <div className="flex flex-col sm:flex-row gap-4 items-start justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Staff sends form</span>
+                  <WhatsAppDemo />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Patient fills via WA</span>
+                  <WhatsAppTemplateFillDemo />
+                </div>
               </div>
             </div>
           </div>
