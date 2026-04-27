@@ -7,7 +7,7 @@ import { getCurrentDoctor, getHospital } from "@/lib/auth";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/forms/new", label: "New Form", icon: FilePlus },
+  { href: "/templates", label: "New Form", icon: FilePlus },
   { href: "/whatsapp", label: "WhatsApp Bot", icon: MessageCircle },
   { href: "/checklist", label: "Checklist", icon: ClipboardCheck },
   { href: "/templates", label: "Templates", icon: FileText },

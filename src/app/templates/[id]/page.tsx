@@ -1315,6 +1315,343 @@ function AnaesthesiaConsentTamilTemplate() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Template E — Consent for Blood Transfusion (English)              */
+/* ------------------------------------------------------------------ */
+function BloodTransfusionConsentTemplate() {
+  const [form, setForm] = useState({
+    relativeOf: "",
+    hospitalNo: "",
+    doctorName: "",
+    patientName: "",
+    relativeName: "",
+    patientSignDate: "",
+    relativeSignDate: "",
+    emergencyDoctorName: "",
+    emergencyDoctorDate: "",
+    emergencyDoctorTime: "",
+  });
+
+  function update(field: string, value: string) {
+    setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  const inputClass = "border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors";
+  const inlineInput = `${inputClass} inline-block`;
+
+  return (
+    <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="bg-white border border-[var(--color-border)] rounded-t-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-teal-700 to-teal-600 text-white px-8 py-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+              <FileText className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
+              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-8 py-6 border-b border-[var(--color-border)]">
+          <h2 className="text-center text-base font-bold uppercase tracking-wide text-gray-900">
+            Consent for Blood Transfusion
+          </h2>
+        </div>
+
+        <div className="px-8 py-6 space-y-6">
+          {/* Main consent paragraph */}
+          <div className="space-y-4 text-sm leading-relaxed text-gray-800">
+            <p className="flex flex-wrap items-baseline gap-1">
+              <span>I / relative of</span>
+              <input className={`${inlineInput} w-48`} placeholder="Patient / Relative Name" value={form.relativeOf} onChange={e => update("relativeOf", e.target.value)} />
+              <span>Hospital No.</span>
+              <input className={`${inlineInput} w-32`} placeholder="Hospital No." value={form.hospitalNo} onChange={e => update("hospitalNo", e.target.value)} />
+              <span>have been</span>
+            </p>
+
+            <p className="flex flex-wrap items-baseline gap-1">
+              <span>advised by my doctor Dr.</span>
+              <input className={`${inlineInput} w-64`} placeholder="Doctor Name" value={form.doctorName} onChange={e => update("doctorName", e.target.value)} />
+              <span>that due to my / the patient&apos;s</span>
+            </p>
+
+            <p>
+              medical condition, I / the patient might require a transfusion of either whole blood, packed red cells,
+              plasma, platelets or cryoprecipitate. The doctor has explained both the risks and the benefits of
+              transfusion in the language I understand.
+            </p>
+          </div>
+
+          {/* Risk acknowledgment */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <p className="text-sm leading-relaxed text-gray-800">
+              I understand that despite preparation and testing as per current standards, there is small chance that
+              a reaction can occur. Some of these, very rarely can be fatal, while other times it may be a mild allergic
+              reaction and the transfusion may have to be stopped. I also understand that despite testing there is a
+              very small chance of transmission of viral infections such as HIV and Hepatitis B and C and other
+              infections such as malaria.
+            </p>
+          </div>
+
+          {/* Consent statement */}
+          <div className="space-y-4 text-sm leading-relaxed text-gray-800">
+            <p>
+              I have had an opportunity to ask questions and with my signature, I give consent to administering
+              blood products for myself / my patient.
+            </p>
+          </div>
+
+          {/* Patient & Relative signatures */}
+          <div className="grid grid-cols-2 gap-8 pt-4">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Patient Name</label>
+                <input className={`${inputClass} w-full`} placeholder="Patient full name" value={form.patientName} onChange={e => update("patientName", e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Signature</label>
+                <div className="h-16 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400">Patient signature area</div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Date (DD/MM/YY)</label>
+                <input className={`${inputClass} w-full`} placeholder="DD/MM/YY" value={form.patientSignDate} onChange={e => update("patientSignDate", e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Relative Name</label>
+                <input className={`${inputClass} w-full`} placeholder="Relative full name" value={form.relativeName} onChange={e => update("relativeName", e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Signature</label>
+                <div className="h-16 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400">Relative signature area</div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Date (DD/MM/YY)</label>
+                <input className={`${inputClass} w-full`} placeholder="DD/MM/YY" value={form.relativeSignDate} onChange={e => update("relativeSignDate", e.target.value)} />
+              </div>
+            </div>
+          </div>
+
+          {/* Emergency / Life-threatening section */}
+          <div className="border-t border-gray-300 pt-6 mt-6">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p className="text-sm leading-relaxed text-gray-800">
+                Because of a life threatening medical condition, I have not provided enough information and not taken
+                informed consent. I have proceeded with ordering blood products to be administered to improve /
+                reverse a life threatening medical condition.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Name of the Doctor</label>
+                <input className={`${inputClass} w-full`} placeholder="Doctor name" value={form.emergencyDoctorName} onChange={e => update("emergencyDoctorName", e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Signature</label>
+                <div className="h-16 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400">Doctor signature area</div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Date</label>
+                  <input className={`${inputClass} w-full`} placeholder="DD/MM/YY" value={form.emergencyDoctorDate} onChange={e => update("emergencyDoctorDate", e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Time</label>
+                  <input className={`${inputClass} w-full`} placeholder="HH:MM" value={form.emergencyDoctorTime} onChange={e => update("emergencyDoctorTime", e.target.value)} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-3 mt-6">
+        <button className="flex-1 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+          Save as Custom Template
+        </button>
+        <Link href="/forms/new" className="flex-1 bg-[var(--color-primary)] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors text-center">
+          Use This Template
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Template F — Consent for Blood Transfusion (Tamil)                */
+/* ------------------------------------------------------------------ */
+function BloodTransfusionConsentTamilTemplate() {
+  const [form, setForm] = useState({
+    relativeOf: "",
+    hospitalNo: "",
+    doctorName: "",
+    patientName: "",
+    relativeName: "",
+    patientSignDate: "",
+    relativeSignDate: "",
+    emergencyDoctorName: "",
+    emergencyDoctorDate: "",
+    emergencyDoctorTime: "",
+  });
+
+  function update(field: string, value: string) {
+    setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  const inputClass = "border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors";
+  const inlineInput = `${inputClass} inline-block`;
+
+  return (
+    <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="bg-white border border-[var(--color-border)] rounded-t-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-teal-700 to-teal-600 text-white px-8 py-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+              <FileText className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
+              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-8 py-6 border-b border-[var(--color-border)]">
+          <h2 className="text-center text-base font-bold uppercase tracking-wide text-gray-900">
+            இரத்த செலுத்துதல் ஒப்புதல் படிவம்
+          </h2>
+          <p className="text-center text-xs text-gray-500 mt-1 italic">
+            (Consent for Blood Transfusion)
+          </p>
+        </div>
+
+        <div className="px-8 py-6 space-y-6">
+          {/* Main consent paragraph */}
+          <div className="space-y-4 text-sm leading-relaxed text-gray-800">
+            <p className="flex flex-wrap items-baseline gap-1">
+              <span>கீழ் குறிப்பிட்டுள்ள</span>
+              <input className={`${inlineInput} w-48`} placeholder="நோயாளியின் பெயர்" value={form.relativeOf} onChange={e => update("relativeOf", e.target.value)} />
+              <span>சிகிச்சையகம் எண்</span>
+              <input className={`${inlineInput} w-32`} placeholder="எண்" value={form.hospitalNo} onChange={e => update("hospitalNo", e.target.value)} />
+              <span>வீ</span>
+            </p>
+
+            <p className="flex flex-wrap items-baseline gap-1">
+              <span>சிகிச்சையகத்தின் மருத்துவர் மற்றும் மருத்துவமனையின் மருத்துவர் டாக்டர்.</span>
+              <input className={`${inlineInput} w-64`} placeholder="மருத்துவர் பெயர்" value={form.doctorName} onChange={e => update("doctorName", e.target.value)} />
+              <span>வீ</span>
+            </p>
+
+            <p>
+              நோயாளியின் குறிப்பான முறையில் இரத்தம் அளிக்க இயலுமே என்றும் / நோயாளிக்கு முழு இரத்தம் /
+              கட்டிய / செவ்வமேன் / கிரியோபிரசிபிடேட் / D.I.C / சுத்தி வரி பிசின் செல்லை எவற்றின் எவர்களிடமும்
+              இரத்தம் அளிக்கும் தேவை ஏற்படக்கூடும் என்றும் மருத்துவர் என்னிடம் விளக்கியுள்ளார்.
+            </p>
+          </div>
+
+          {/* Risk acknowledgment */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <p className="text-sm leading-relaxed text-gray-800">
+              தற்போது நடைமுறை பரிசோதனைகள் மற்றும் ஏற்பாடுகளின் பின் கூடுமானவரை ஒரு சிறிய நிகழ்தகவு
+              இருப்பதும் என்று புரிந்து கொள்கிறேன். இவற்றால் மிக அரிதாக உயிர்ச்சேதமான எதிர்விளைவுகள்
+              ஏற்படலாம் அல்லது எதிர்வினையால் சிற்றுணர்ச்சி ஏற்படலாம், மேலும் இரத்த செலுத்துதலை நிறுத்த
+              வேண்டியிருக்கலாம். மேலும் மற்ற சோதனைகள் இருப்பினும் HIV / Malaria / Hepatitis
+              B மற்றும் C போன்ற தொற்றுநோய்கள் ஏற்படும் நிகழ்தகவு உள்ளது என்றும் அறிந்து கொள்கிறேன்.
+            </p>
+          </div>
+
+          {/* Consent statement */}
+          <div className="space-y-4 text-sm leading-relaxed text-gray-800">
+            <p>
+              எனது மருத்துவரிடம் இரத்த செலுத்துதல் மற்றும் சாரி அறிவுக்கிடைமே போதுமான கேள்விகளைக்
+              கேட்டிருக்கிறேன். நோய்க்கு இரத்தம் செலுத்த முழு முன்னணி ஒப்புதல் அளிக்கிறேன்.
+            </p>
+          </div>
+
+          {/* Patient & Relative signatures */}
+          <div className="grid grid-cols-2 gap-8 pt-4">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">நோயாளியின் பெயர்</label>
+                <input className={`${inputClass} w-full`} placeholder="நோயாளியின் முழு பெயர்" value={form.patientName} onChange={e => update("patientName", e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">கையொப்பம்</label>
+                <div className="h-16 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400">கையொப்பம்</div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">தேதி</label>
+                <input className={`${inputClass} w-full`} placeholder="நாள்/மாதம்/ஆண்டு" value={form.patientSignDate} onChange={e => update("patientSignDate", e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">உறவினர் பெயர்</label>
+                <input className={`${inputClass} w-full`} placeholder="உறவினர் முழு பெயர்" value={form.relativeName} onChange={e => update("relativeName", e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">கையொப்பம்</label>
+                <div className="h-16 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400">கையொப்பம்</div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">தேதி</label>
+                <input className={`${inputClass} w-full`} placeholder="நாள்/மாதம்/ஆண்டு" value={form.relativeSignDate} onChange={e => update("relativeSignDate", e.target.value)} />
+              </div>
+            </div>
+          </div>
+
+          {/* Emergency / Life-threatening section */}
+          <div className="border-t border-gray-300 pt-6 mt-6">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p className="text-sm leading-relaxed text-gray-800">
+                நோயாளியின் ஆபத்தான உடல் நிலையை கொண்டு என்னால் உரிய தகவல் நேரத்தில் போதிய
+                ஒப்புதல் பெறும் நிலையில் இல்லை. எனவே நான் உயிரச் காப்பாற்ற / உடல் நிலையை மேம்படுத்த
+                இரத்தம் / இரத்தப் பொருட்கள் செலுத்த பெற ஏற்பாடுகள் மேற்கொண்டுள்ளேன்.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">மருத்துவர் பெயர்</label>
+                <input className={`${inputClass} w-full`} placeholder="மருத்துவர் பெயர்" value={form.emergencyDoctorName} onChange={e => update("emergencyDoctorName", e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">கையொப்பம்</label>
+                <div className="h-16 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400">மருத்துவர் கையொப்பம்</div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">தேதி</label>
+                  <input className={`${inputClass} w-full`} placeholder="நாள்/மாதம்/ஆண்டு" value={form.emergencyDoctorDate} onChange={e => update("emergencyDoctorDate", e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">நேரம்</label>
+                  <input className={`${inputClass} w-full`} placeholder="மணி:நிமிடம்" value={form.emergencyDoctorTime} onChange={e => update("emergencyDoctorTime", e.target.value)} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-3 mt-6">
+        <button className="flex-1 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+          Save as Custom Template
+        </button>
+        <Link href="/forms/new" className="flex-1 bg-[var(--color-primary)] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors text-center">
+          Use This Template
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Placeholder for other templates                                   */
 /* ------------------------------------------------------------------ */
 function ComingSoon({ id }: { id: string }) {
@@ -1371,7 +1708,9 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
               {id === "anaesthesia-consent" && "Anaesthesia Consent"}
               {id === "surgery-consent-tamil" && "அறுவை சிகிச்சை ஒப்புதல் (Tamil)"}
               {id === "anaesthesia-consent-tamil" && "மயக்க மருந்து ஒப்புதல் (Tamil)"}
-              {!["surgery-consent", "anaesthesia-consent", "surgery-consent-tamil", "anaesthesia-consent-tamil"].includes(id) && "Preview"}
+              {id === "blood-transfusion-consent" && "Blood Transfusion Consent"}
+              {id === "blood-transfusion-consent-tamil" && "இரத்த செலுத்துதல் ஒப்புதல் (Tamil)"}
+              {!["surgery-consent", "anaesthesia-consent", "surgery-consent-tamil", "anaesthesia-consent-tamil", "blood-transfusion-consent", "blood-transfusion-consent-tamil"].includes(id) && "Preview"}
             </span>
           </div>
         </div>
@@ -1380,7 +1719,9 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
         {id === "anaesthesia-consent" && <AnaesthesiaConsentTemplate />}
         {id === "surgery-consent-tamil" && <SurgeryConsentTamilTemplate />}
         {id === "anaesthesia-consent-tamil" && <AnaesthesiaConsentTamilTemplate />}
-        {!["surgery-consent", "anaesthesia-consent", "surgery-consent-tamil", "anaesthesia-consent-tamil"].includes(id) && <ComingSoon id={id} />}
+        {id === "blood-transfusion-consent" && <BloodTransfusionConsentTemplate />}
+        {id === "blood-transfusion-consent-tamil" && <BloodTransfusionConsentTamilTemplate />}
+        {!["surgery-consent", "anaesthesia-consent", "surgery-consent-tamil", "anaesthesia-consent-tamil", "blood-transfusion-consent", "blood-transfusion-consent-tamil"].includes(id) && <ComingSoon id={id} />}
       </main>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
-import { Plus, FileText, Copy, Pencil, Trash2, Search, ShieldAlert, Stethoscope, ClipboardList, Users, Upload, Sparkles } from "lucide-react";
+import { Plus, FileText, Copy, Pencil, Trash2, Search, ShieldAlert, Stethoscope, ClipboardList, Users, Upload, Sparkles, Droplets } from "lucide-react";
 import Link from "next/link";
 
 const templates = [
@@ -43,6 +43,26 @@ const templates = [
     used: 76,
     lastEdited: "3 days ago",
     color: "bg-amber-50 text-amber-600",
+  },
+  {
+    id: "blood-transfusion-consent",
+    name: "Consent for Blood Transfusion",
+    desc: "Blood transfusion authorization — covers whole blood, packed red cells, plasma, platelets, cryoprecipitate with risk disclosure",
+    icon: Droplets,
+    lang: "EN",
+    used: 64,
+    lastEdited: "Today",
+    color: "bg-rose-50 text-rose-600",
+  },
+  {
+    id: "blood-transfusion-consent-tamil",
+    name: "இரத்த செலுத்துதல் ஒப்புதல் படிவம்",
+    desc: "இரத்த செலுத்துதல் அங்கீகாரம் — Tamil version of blood transfusion consent with full risk disclosure",
+    icon: Droplets,
+    lang: "தமிழ்",
+    used: 31,
+    lastEdited: "Today",
+    color: "bg-rose-50 text-rose-600",
   },
   {
     id: "anaesthesia-care-plan",
@@ -162,6 +182,7 @@ export default function Templates() {
               <option>All Categories</option>
               <option>Surgery</option>
               <option>Anaesthesia</option>
+              <option>Blood Transfusion</option>
               <option>Nursing</option>
               <option>Pre-Operative</option>
             </select>
@@ -189,6 +210,14 @@ export default function Templates() {
           <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide pb-2 border-b border-[var(--color-border)] mb-4">Anaesthesia Consent</h3>
           <div className="grid grid-cols-3 gap-4 mb-8">
             {templates.filter(t => t.id === "anaesthesia-consent" || t.id === "anaesthesia-consent-tamil").map(t => (
+              <TemplateCard key={t.id} t={t} />
+            ))}
+          </div>
+
+          {/* Section 3: Blood Transfusion */}
+          <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide pb-2 border-b border-[var(--color-border)] mb-4">Blood Transfusion</h3>
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            {templates.filter(t => t.id === "blood-transfusion-consent" || t.id === "blood-transfusion-consent-tamil").map(t => (
               <TemplateCard key={t.id} t={t} />
             ))}
           </div>
