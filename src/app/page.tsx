@@ -275,10 +275,10 @@ export default function Home() {
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M0 40V0h40' fill='none' stroke='white' stroke-width='.5'/%3E%3C/svg%3E\")" }} />
 
-          <div className="relative max-w-7xl mx-auto px-6 py-20 pb-24">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10 lg:gap-12 items-center">
+          <div className="relative max-w-6xl mx-auto px-6 py-20 pb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
               {/* Left — text on dark */}
-              <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
+              <div className="max-w-lg mx-auto md:mx-0 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full text-sm font-medium text-teal-300 mb-8">
                   <Shield className="w-3.5 h-3.5" />
                   IT Act 2000 Compliant
@@ -294,7 +294,7 @@ export default function Home() {
                   Doctors create consent forms. Assistants send them via WhatsApp. Patients review, record a video KYC, and sign — all from their phone.
                 </p>
 
-                <div className="flex items-center gap-4 mb-6 justify-center lg:justify-start">
+                <div className="flex items-center gap-4 mb-6 justify-center md:justify-start">
                   <Link href="/login" className="inline-flex items-center gap-2 bg-teal-600 text-white h-11 px-8 rounded-full font-medium text-sm hover:bg-teal-700 transition-colors">
                     Doctor Login <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -303,7 +303,7 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <div className="flex items-center gap-5 justify-center lg:justify-start flex-wrap">
+                <div className="flex items-center gap-5 justify-center md:justify-start flex-wrap">
                   {["IT Act 2000", "Video KYC", "22 Languages"].map((item) => (
                     <span key={item} className="flex items-center gap-1.5 text-xs text-gray-500">
                       <CheckCircle className="w-3.5 h-3.5 text-teal-500" />
@@ -313,14 +313,20 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right — WhatsApp demos side by side */}
-              <div className="flex flex-col sm:flex-row gap-4 items-start justify-center">
+              {/* Right — Both demos stacked vertically */}
+              <div className="flex flex-col items-center gap-6">
                 <div className="flex flex-col items-center gap-2">
-                  <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Staff sends form</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-teal-600/20 border border-teal-500/30 flex items-center justify-center text-[9px] font-bold text-teal-300">1</span>
+                    <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Staff sends form</span>
+                  </div>
                   <WhatsAppDemo />
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Patient fills via WA</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-teal-600/20 border border-teal-500/30 flex items-center justify-center text-[9px] font-bold text-teal-300">2</span>
+                    <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Patient fills via WhatsApp</span>
+                  </div>
                   <WhatsAppTemplateFillDemo />
                 </div>
               </div>
