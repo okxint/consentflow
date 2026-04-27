@@ -2,18 +2,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { LayoutDashboard, FilePlus, FileText, Users, BarChart3, Settings, MessageCircle, Siren, ClipboardCheck, Layers, Monitor, Menu, X } from "lucide-react";
+import { LayoutDashboard, FilePlus, FileText, BarChart3, Settings, MessageCircle, ClipboardCheck, Monitor, Menu, X } from "lucide-react";
 import { getCurrentDoctor, getHospital } from "@/lib/auth";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/forms/new", label: "New Form", icon: FilePlus },
-  { href: "/forms/bulk", label: "Bulk Create", icon: Layers },
   { href: "/whatsapp", label: "WhatsApp Bot", icon: MessageCircle },
-  { href: "/emergency", label: "Emergency", icon: Siren },
   { href: "/checklist", label: "Checklist", icon: ClipboardCheck },
   { href: "/templates", label: "Templates", icon: FileText },
-  { href: "/patients", label: "Patients", icon: Users },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/ot-board", label: "OT Board", icon: Monitor },
   { href: "/settings", label: "Settings", icon: Settings },
