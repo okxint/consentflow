@@ -97,7 +97,7 @@ export default function Dashboard() {
               <h1 className="text-2xl font-bold">Welcome, {doctor.name}</h1>
               <p className="text-[var(--color-text-secondary)] text-sm mt-1">Manage and track patient consent forms</p>
             </div>
-            <Link href="/forms/new" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors">
+            <Link href="/templates" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors">
               <Plus className="w-4 h-4" /> New Consent Form
             </Link>
           </div>
@@ -258,7 +258,7 @@ export default function Dashboard() {
                       <ClipboardList className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                       <p className="font-semibold text-gray-900 mb-1">No consent forms yet</p>
                       <p className="text-sm text-[var(--color-muted)] mb-4">Create your first consent form to get started.</p>
-                      <Link href="/forms/new" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors">
+                      <Link href="/templates" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors">
                         <Plus className="w-4 h-4" /> New Consent Form
                       </Link>
                     </td>
