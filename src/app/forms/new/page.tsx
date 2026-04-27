@@ -115,13 +115,15 @@ export default function NewForm() {
           <div className="flex items-center gap-2 text-sm text-[var(--color-muted)]">
             <Link href="/dashboard" className="hover:text-[var(--color-primary)]">Dashboard</Link>
             <ChevronRight className="w-3 h-3" />
-            <span className="text-[var(--color-text)]">New Form</span>
+            <Link href="/templates" className="hover:text-[var(--color-primary)]">Templates</Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-[var(--color-text)]">Create Template</span>
           </div>
         </div>
 
         <div className="max-w-2xl mx-auto py-8 px-4">
-          <h1 className="text-2xl font-bold mb-1">Create New Consent Form</h1>
-          <p className="text-[var(--color-text-secondary)] text-sm mb-8">Fill in the details to generate a consent form for the patient</p>
+          <h1 className="text-2xl font-bold mb-1">Create Template</h1>
+          <p className="text-[var(--color-text-secondary)] text-sm mb-8">Fill in the details to create a new consent form template</p>
 
           <div className="space-y-8">
             {/* Patient Information */}

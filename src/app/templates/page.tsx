@@ -151,9 +151,9 @@ export default function Templates() {
               <Link href="/templates/upload" className="inline-flex items-center gap-2 border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-teal-50 transition-colors">
                 <Upload className="w-4 h-4" /> Upload Your Form
               </Link>
-              <button className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
+              <Link href="/forms/new" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
                 <Plus className="w-4 h-4" /> Create Template
-              </button>
+              </Link>
             </div>
           </div>
 
