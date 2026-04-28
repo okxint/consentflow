@@ -40,10 +40,18 @@ function WhatsAppDemo() {
       { label: "DVT / PE", checked: false },
     ] },
     { from: "staff", text: "✅ 4 complications selected" },
-    { from: "bot", text: "Any comorbidities?", buttons: ["Diabetes", "Hypertension", "COPD / Asthma", "None", "Other..."], selected: "Hypertension" },
-    { from: "bot", text: "⚠️ Added: BP fluctuations, higher bleeding risk\n\nPatient phone number?" },
+    { from: "bot", text: "Any comorbidities?\nSelect all that apply:", checks: [
+      { label: "Diabetes Mellitus", checked: false },
+      { label: "Hypertension", checked: true },
+      { label: "COPD / Asthma", checked: false },
+      { label: "Coronary Artery Disease", checked: false },
+      { label: "Obesity (BMI > 30)", checked: true },
+      { label: "None of the above", checked: false },
+    ] },
+    { from: "staff", text: "✅ 2 comorbidities selected\n(Hypertension, Obesity)" },
+    { from: "bot", text: "⚠️ Auto-added complications:\n• BP fluctuations\n• Higher bleeding risk\n• Difficult airway\n• DVT risk\n\nPatient phone number?" },
     { from: "staff", text: "9900145678" },
-    { from: "bot", text: "✅ Form ready!\n\n👤 Ananya Reddy, 34/F\n🏥 Lap Cholecystectomy\n⚠️ 6 complications\n📱 +91 99001 45678\n\n📤 Sending to patient..." },
+    { from: "bot", text: "✅ Form ready!\n\n👤 Ananya Reddy, 34/F\n🏥 Lap Cholecystectomy\n⚠️ 8 complications\n📱 +91 99001 45678\n\n📤 Sending to patient..." },
     { from: "bot", text: "✅ Consent sent!\nPatient will get:\n🔗 Form link\n🎥 Video KYC\n✍️ Signature pad\n\n⏰ Expires in 48hrs" },
   ];
 
