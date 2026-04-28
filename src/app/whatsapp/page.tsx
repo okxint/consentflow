@@ -277,120 +277,132 @@ export default function WhatsAppBot() {
 
         {activeTab === "settings" && (
           <div className="flex-1 overflow-auto p-8 pt-6">
-            <div className="max-w-2xl space-y-6">
-              <div className="bg-white border border-[var(--color-border)] rounded-lg p-6">
-                <h2 className="font-semibold mb-1">WhatsApp Business API</h2>
-                <p className="text-sm text-[var(--color-text-secondary)] mb-4">Connect your WhatsApp Business account to send consent forms</p>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5">WhatsApp Business Phone</label>
-                    <div className="flex gap-2">
-                      <input className="flex-1 border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm" defaultValue="+91 44 2829 3333" />
-                      <span className="inline-flex items-center px-3 text-xs font-medium text-[var(--color-success)] bg-green-50 rounded-lg border border-green-200">Verified</span>
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-white border border-[var(--color-border)] rounded-t-lg overflow-hidden">
+                {/* Header — template style */}
+                <div className="bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white px-8 py-5">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                      <Bot className="w-7 h-7" />
+                    </div>
+                    <div>
+                      <h1 className="text-lg font-bold tracking-wide">WHATSAPP BOT CONFIGURATION</h1>
+                      <p className="text-green-100 text-sm">ConsentFlow &mdash; WhatsApp Business Integration</p>
                     </div>
                   </div>
+                </div>
+
+                <div className="px-8 py-6 space-y-8">
+                  {/* Section 1: Business API */}
                   <div>
-                    <label className="block text-sm font-medium mb-1.5">API Provider</label>
-                    <select className="w-full border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm">
-                      <option>Twilio</option>
-                      <option>Gupshup</option>
-                      <option>Wati</option>
-                      <option>Meta Cloud API (Direct)</option>
-                    </select>
+                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200">WhatsApp Business API</h2>
+                    <div className="space-y-4 text-sm leading-relaxed text-gray-800">
+                      <div className="flex flex-wrap items-baseline gap-1">
+                        <span>WhatsApp Business Phone:</span>
+                        <input className="border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors w-48" defaultValue="+91 44 2829 3333" />
+                        <span className="text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200 ml-1">VERIFIED</span>
+                      </div>
+
+                      <div className="flex flex-wrap items-baseline gap-1">
+                        <span>API Provider:</span>
+                        <select className="border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors">
+                          <option>Twilio</option>
+                          <option>Gupshup</option>
+                          <option>Wati</option>
+                          <option>Meta Cloud API (Direct)</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-wrap items-baseline gap-1">
+                        <span>API Key:</span>
+                        <input type="password" className="border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors w-64" defaultValue="sk-xxxxxxxxxxxx" />
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Section 2: Consent Form Message Template */}
                   <div>
-                    <label className="block text-sm font-medium mb-1.5">API Key</label>
-                    <input type="password" className="w-full border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm" defaultValue="sk-xxxxxxxxxxxx" />
+                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200">Consent Form Message</h2>
+                    <div className="bg-[#ece5dd] rounded-xl p-4 space-y-3">
+                      <div className="bg-white rounded-lg rounded-tl-none px-3 py-2.5 shadow-sm max-w-[90%]">
+                        <p className="text-[9px] font-bold text-[#075e54] mb-1">ConsentFlow Bot</p>
+                        <div className="text-sm leading-relaxed space-y-2">
+                          <p>🏥 <strong><input className="border-b border-gray-300 bg-transparent outline-none px-0.5 font-bold text-sm text-gray-900 focus:border-[var(--color-primary)] transition-colors w-40" defaultValue="City General Hospital" /></strong></p>
+                          <p>Dear <input className="border-b border-gray-300 bg-transparent outline-none px-0.5 text-sm text-gray-900 focus:border-[var(--color-primary)] transition-colors w-28 italic" defaultValue="{{patient_name}}" />,</p>
+                          <p>Your doctor has prepared a consent form for <strong><input className="border-b border-gray-300 bg-transparent outline-none px-0.5 font-bold text-sm text-gray-900 focus:border-[var(--color-primary)] transition-colors w-36 italic" defaultValue="{{procedure_name}}" /></strong>.</p>
+                          <div className="text-xs text-gray-600 space-y-0.5">
+                            <p>Surgeon: <input className="border-b border-gray-300 bg-transparent outline-none px-0.5 text-xs text-gray-900 focus:border-[var(--color-primary)] transition-colors w-28 italic" defaultValue="{{surgeon_name}}" /></p>
+                            <p>Scheduled: <input className="border-b border-gray-300 bg-transparent outline-none px-0.5 text-xs text-gray-900 focus:border-[var(--color-primary)] transition-colors w-28 italic" defaultValue="{{scheduled_date}}" /></p>
+                          </div>
+                          <p>Please review and sign here:</p>
+                          <p className="text-[var(--color-primary)]">👉 <span className="italic text-xs">{"{{consent_link}}"}</span></p>
+                          <p className="text-xs text-gray-500">⏰ This link expires in <input className="border-b border-gray-300 bg-transparent outline-none px-0.5 text-xs text-gray-900 focus:border-[var(--color-primary)] transition-colors w-10 text-center" defaultValue="48" /> hours.</p>
+                          <p className="text-xs text-gray-500">Questions? Call us at <input className="border-b border-gray-300 bg-transparent outline-none px-0.5 text-xs text-gray-900 focus:border-[var(--color-primary)] transition-colors w-32 italic" defaultValue="{{hospital_phone}}" /></p>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-2 italic">Edit fields directly above. Variables like {"{{patient_name}}"} are filled automatically.</p>
+                  </div>
+
+                  {/* Section 3: Reminder Message Template */}
+                  <div>
+                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200">Reminder Message</h2>
+                    <div className="bg-[#ece5dd] rounded-xl p-4 space-y-3">
+                      <div className="bg-white rounded-lg rounded-tl-none px-3 py-2.5 shadow-sm max-w-[90%]">
+                        <p className="text-[9px] font-bold text-[#075e54] mb-1">ConsentFlow Bot</p>
+                        <div className="text-sm leading-relaxed space-y-2">
+                          <p>🔔 Reminder: Your consent form for <strong><input className="border-b border-gray-300 bg-transparent outline-none px-0.5 font-bold text-sm text-gray-900 focus:border-[var(--color-primary)] transition-colors w-36 italic" defaultValue="{{procedure_name}}" /></strong> is still pending.</p>
+                          <p>Please sign before your procedure on <input className="border-b border-gray-300 bg-transparent outline-none px-0.5 text-sm text-gray-900 focus:border-[var(--color-primary)] transition-colors w-28 italic" defaultValue="{{scheduled_date}}" />:</p>
+                          <p className="text-[var(--color-primary)]">👉 <span className="italic text-xs">{"{{consent_link}}"}</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 4: Auto-Reminders */}
+                  <div>
+                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200">Auto-Reminders</h2>
+                    <div className="space-y-3">
+                      {[
+                        { label: "Send reminder if not signed after 4 hours", defaultChecked: true },
+                        { label: "Send 2nd reminder after 24 hours", defaultChecked: true },
+                        { label: "Notify doctor if not signed after 48 hours", defaultChecked: true },
+                        { label: "Send day-before-procedure reminder", defaultChecked: false },
+                      ].map(r => (
+                        <label key={r.label} className="flex items-center gap-3 cursor-pointer">
+                          <input type="checkbox" defaultChecked={r.defaultChecked} className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)]" />
+                          <span className="text-sm text-gray-700">{r.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Section 5: QR Code */}
+                  <div>
+                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200">QR Code for Staff</h2>
+                    <div className="flex items-center gap-6">
+                      <div className="w-28 h-28 border-2 border-gray-200 rounded-lg flex items-center justify-center bg-gray-50">
+                        <QrCode className="w-16 h-16 text-gray-300" />
+                      </div>
+                      <div className="text-sm text-gray-600 space-y-1.5">
+                        <p>1. Open WhatsApp on your phone</p>
+                        <p>2. Scan this QR code</p>
+                        <p>3. Start sending consent forms!</p>
+                        <p className="text-[var(--color-primary)] font-medium flex items-center gap-1 mt-2">
+                          <Phone className="w-3.5 h-3.5" /> Or message +91 44 2829 3333
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-[var(--color-border)] rounded-lg p-6">
-                <h2 className="font-semibold mb-1">Message Templates</h2>
-                <p className="text-sm text-[var(--color-text-secondary)] mb-4">Customize the WhatsApp message patients receive</p>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5">Consent Form Message</label>
-                    <textarea
-                      className="w-full border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm font-mono"
-                      rows={8}
-                      defaultValue={`🏥 *{{hospital_name}}*
-
-Dear {{patient_name}},
-
-Your doctor has prepared a consent form for *{{procedure_name}}*.
-
-Surgeon: {{surgeon_name}}
-Scheduled: {{scheduled_date}}
-
-Please review and sign here:
-👉 {{consent_link}}
-
-⏰ This link expires in 48 hours.
-
-Questions? Call us at {{hospital_phone}}`}
-                    />
-                    <p className="text-xs text-[var(--color-muted)] mt-1">Use {"{{variable}}"} for dynamic content</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5">Reminder Message</label>
-                    <textarea
-                      className="w-full border border-[var(--color-border)] rounded-lg px-3 py-2.5 text-sm font-mono"
-                      rows={4}
-                      defaultValue={`🔔 Reminder: Your consent form for *{{procedure_name}}* is still pending.
-
-Please sign before your procedure on {{scheduled_date}}:
-👉 {{consent_link}}`}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white border border-[var(--color-border)] rounded-lg p-6">
-                <h2 className="font-semibold mb-1">Auto-Reminders</h2>
-                <p className="text-sm text-[var(--color-text-secondary)] mb-4">Automatically remind patients to sign</p>
-
-                <div className="space-y-3">
-                  {[
-                    { label: "Send reminder if not signed after 4 hours", defaultChecked: true },
-                    { label: "Send 2nd reminder after 24 hours", defaultChecked: true },
-                    { label: "Notify doctor if not signed after 48 hours", defaultChecked: true },
-                    { label: "Send day-before-procedure reminder", defaultChecked: false },
-                  ].map(r => (
-                    <label key={r.label} className="flex items-center gap-3 cursor-pointer">
-                      <input type="checkbox" defaultChecked={r.defaultChecked} className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)]" />
-                      <span className="text-sm">{r.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-white border border-[var(--color-border)] rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="font-semibold">QR Code for Staff</h2>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Staff can scan this to open the bot on their phone</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="w-32 h-32 border-2 border-[var(--color-border)] rounded-lg flex items-center justify-center bg-white">
-                    <QrCode className="w-20 h-20 text-gray-300" />
-                  </div>
-                  <div className="text-sm text-[var(--color-text-secondary)] space-y-2">
-                    <p>1. Open WhatsApp on your phone</p>
-                    <p>2. Scan this QR code</p>
-                    <p>3. Start sending consent forms!</p>
-                    <button className="text-[var(--color-primary)] font-medium hover:underline flex items-center gap-1 mt-2">
-                      <Phone className="w-3.5 h-3.5" /> Or message +91 44 2829 3333
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end">
-                <button className="bg-[var(--color-primary)] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)]">
+              {/* Action buttons — template style */}
+              <div className="flex gap-3 mt-6">
+                <button className="flex-1 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+                  Reset to Default
+                </button>
+                <button className="flex-1 bg-[var(--color-primary)] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors">
                   Save Settings
                 </button>
               </div>
