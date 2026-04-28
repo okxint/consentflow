@@ -2,7 +2,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import { use, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ChevronRight, FileText, Sparkles } from "lucide-react";
+import { ChevronRight, FileText, Sparkles, Printer, LinkIcon, Copy, Check } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Shared: Procedure-specific risk database (Orthopaedic focus)       */
@@ -471,6 +471,78 @@ function PatientDemographicsSection({
   );
 }
 
+/* ─── Shared Action Bar with Print & Generate Link ─── */
+function TemplateActionBar() {
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [showLink, setShowLink] = useState(false);
+  const generatedLink = typeof window !== "undefined"
+    ? `${window.location.origin}/sign/cf-${Date.now().toString(36)}`
+    : "#";
+
+  function handlePrint() {
+    window.print();
+  }
+
+  function handleGenerateLink() {
+    setShowLink(true);
+  }
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(generatedLink).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className="mt-6 space-y-3 print:hidden">
+      {/* Primary actions */}
+      <div className="flex gap-3">
+        <button
+          onClick={handlePrint}
+          className="flex-1 flex items-center justify-center gap-2 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <Printer className="w-4 h-4" />
+          Print (A4)
+        </button>
+        <button
+          onClick={handleGenerateLink}
+          className="flex-1 flex items-center justify-center gap-2 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <LinkIcon className="w-4 h-4" />
+          Generate Link
+        </button>
+        <button className="flex-1 bg-[var(--color-primary)] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors">
+          Save Template
+        </button>
+      </div>
+
+      {/* Generated link display */}
+      {showLink && (
+        <div className="bg-gray-50 border border-[var(--color-border)] rounded-lg p-4" style={{ animation: "fadeSlideUp 0.2s ease-out" }}>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Patient Consent Link</p>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-white border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs font-mono text-[var(--color-primary)] truncate">
+              {generatedLink}
+            </div>
+            <button
+              onClick={handleCopyLink}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                linkCopied
+                  ? "bg-green-100 text-green-700 border border-green-200"
+                  : "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)]"
+              }`}
+            >
+              {linkCopied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
+            </button>
+          </div>
+          <p className="text-[10px] text-gray-400 mt-2">Share this link with the patient via WhatsApp, SMS, or email. Valid for 48 hours.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  Template A — Consent for Procedure / Surgery, High Risk Consent   */
 /* ------------------------------------------------------------------ */
@@ -876,15 +948,7 @@ function SurgeryConsentTemplate() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="bg-white border border-t-0 border-[var(--color-border)] rounded-b-lg px-8 py-5 flex items-center justify-between">
-        <button className="border border-[var(--color-border)] text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-          Save as Custom Template
-        </button>
-        <button className="bg-[var(--color-primary)] text-white text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors">
-          Use This Template
-        </button>
-      </div>
+      <TemplateActionBar />
     </div>
   );
 }
@@ -1231,15 +1295,7 @@ function AnaesthesiaConsentTemplate() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="bg-white border border-t-0 border-[var(--color-border)] rounded-b-lg px-8 py-5 flex items-center justify-between">
-        <button className="border border-[var(--color-border)] text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-          Save as Custom Template
-        </button>
-        <button className="bg-[var(--color-primary)] text-white text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors">
-          Use This Template
-        </button>
-      </div>
+      <TemplateActionBar />
     </div>
   );
 }
@@ -1611,15 +1667,7 @@ function SurgeryConsentTamilTemplate() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="bg-white border border-t-0 border-[var(--color-border)] rounded-b-lg px-8 py-5 flex items-center justify-between">
-        <button className="border border-[var(--color-border)] text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-          Save as Custom Template
-        </button>
-        <button className="bg-[var(--color-primary)] text-white text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors">
-          Use This Template
-        </button>
-      </div>
+      <TemplateActionBar />
     </div>
   );
 }
@@ -1967,15 +2015,7 @@ function AnaesthesiaConsentTamilTemplate() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="bg-white border border-t-0 border-[var(--color-border)] rounded-b-lg px-8 py-5 flex items-center justify-between">
-        <button className="border border-[var(--color-border)] text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-          Save as Custom Template
-        </button>
-        <button className="bg-[var(--color-primary)] text-white text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors">
-          Use This Template
-        </button>
-      </div>
+      <TemplateActionBar />
     </div>
   );
 }
@@ -2179,15 +2219,7 @@ function BloodTransfusionConsentTemplate() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="flex gap-3 mt-6">
-        <button className="flex-1 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-          Save as Custom Template
-        </button>
-        <Link href="/forms/new" className="flex-1 bg-[var(--color-primary)] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors text-center">
-          Use This Template
-        </Link>
-      </div>
+      <TemplateActionBar />
     </div>
   );
 }
@@ -2394,15 +2426,7 @@ function BloodTransfusionConsentTamilTemplate() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="flex gap-3 mt-6">
-        <button className="flex-1 border border-[var(--color-border)] text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-          Save as Custom Template
-        </button>
-        <Link href="/forms/new" className="flex-1 bg-[var(--color-primary)] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors text-center">
-          Use This Template
-        </Link>
-      </div>
+      <TemplateActionBar />
     </div>
   );
 }

@@ -53,8 +53,13 @@ main, [data-page] {
 }
 
 @media print {
-  /* Hide non-essential elements */
-  nav, aside, header, footer, button, .no-print {
+  @page {
+    size: A4;
+    margin: 15mm 12mm;
+  }
+
+  /* Hide sidebar, nav, action buttons */
+  aside, nav, .print\:hidden {
     display: none !important;
   }
 
@@ -64,18 +69,61 @@ main, [data-page] {
     padding: 0 !important;
     width: 100% !important;
     animation: none !important;
+    overflow: visible !important;
+  }
+
+  /* Remove flex layout so content takes full width */
+  .flex.h-full {
+    display: block !important;
   }
 
   /* Reset backgrounds for paper */
   body {
     background: white !important;
     color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  /* Show print area */
-  .print-area {
-    display: block !important;
-    position: static !important;
-    width: 100% !important;
+  /* Template form container — full A4 width */
+  .max-w-3xl {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Keep the form content visible and styled */
+  .bg-white, .bg-gray-50, .bg-blue-50\/50, .bg-teal-50\/50, .bg-amber-50\/50, .bg-red-50 {
+    background-color: white !important;
+    border-color: #ccc !important;
+  }
+
+  /* Make inputs show their values clearly */
+  input, select, textarea {
+    border-color: transparent !important;
+    border-bottom-color: #999 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  /* Keep header colors */
+  .bg-gradient-to-r {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Checkbox prints */
+  input[type="checkbox"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Prevent page breaks inside sections */
+  section, .rounded-lg, .space-y-6 > div {
+    page-break-inside: avoid;
+  }
+
+  /* Hide breadcrumb bar */
+  .border-b.bg-white .flex.items-center.gap-2 {
+    display: none !important;
   }
 }
