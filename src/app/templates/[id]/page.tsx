@@ -5,6 +5,99 @@ import Link from "next/link";
 import { ChevronRight, FileText, Sparkles } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
+/*  Shared: Procedure-specific risk database (Orthopaedic focus)       */
+/* ------------------------------------------------------------------ */
+const PROCEDURE_DATABASE: Record<string, { category: string; risks: string[] }> = {
+  "Total Knee Replacement": {
+    category: "Orthopaedics",
+    risks: ["Infection (superficial / deep / prosthetic joint)", "Deep Vein Thrombosis (DVT)", "Pulmonary Embolism", "Implant loosening / failure", "Periprosthetic fracture", "Stiffness / reduced range of motion", "Nerve damage (peroneal nerve palsy)", "Vascular injury", "Leg length discrepancy", "Persistent pain", "Allergic reaction to implant materials", "Blood loss requiring transfusion", "Wound dehiscence"],
+  },
+  "Total Hip Replacement": {
+    category: "Orthopaedics",
+    risks: ["Dislocation of prosthesis", "Infection (superficial / deep / prosthetic joint)", "Deep Vein Thrombosis (DVT)", "Pulmonary Embolism", "Leg length discrepancy", "Periprosthetic fracture", "Implant loosening / wear", "Sciatic nerve injury", "Heterotopic ossification", "Blood loss requiring transfusion", "Vascular injury"],
+  },
+  "ACL Reconstruction": {
+    category: "Orthopaedics",
+    risks: ["Graft failure / re-rupture", "Infection", "Stiffness / arthrofibrosis", "Anterior knee pain", "Nerve damage (saphenous / peroneal)", "DVT / PE", "Donor site morbidity (patellar tendon / hamstring)", "Residual instability", "Hardware irritation", "Tunnel widening"],
+  },
+  "Rotator Cuff Repair": {
+    category: "Orthopaedics",
+    risks: ["Re-tear of repaired tendon", "Stiffness / frozen shoulder", "Nerve injury (axillary / suprascapular)", "Infection", "Anchor / suture failure", "Deltoid detachment", "Complex Regional Pain Syndrome (CRPS)", "Persistent weakness", "DVT / PE"],
+  },
+  "Spinal Fusion": {
+    category: "Orthopaedics",
+    risks: ["Non-union / pseudarthrosis", "Adjacent segment disease", "Nerve root injury / paralysis", "Spinal cord injury", "Dural tear / CSF leak", "Infection (superficial / deep / discitis)", "Hardware failure / loosening", "Blood loss requiring transfusion", "DVT / PE", "Chronic pain at graft site", "Urinary retention"],
+  },
+  "Laminectomy / Discectomy": {
+    category: "Orthopaedics",
+    risks: ["Recurrent disc herniation", "Dural tear / CSF leak", "Nerve root injury", "Infection", "Epidural haematoma", "Instability requiring fusion", "Incomplete symptom relief", "Cauda equina syndrome", "DVT / PE"],
+  },
+  "Open Reduction Internal Fixation (ORIF)": {
+    category: "Orthopaedics",
+    risks: ["Infection", "Non-union / malunion", "Hardware failure / breakage", "Nerve / vascular injury", "Compartment syndrome", "Blood loss", "Stiffness / reduced mobility", "Re-fracture after hardware removal", "Wound complications", "DVT / PE"],
+  },
+  "Arthroscopy (Knee)": {
+    category: "Orthopaedics",
+    risks: ["Infection", "DVT / PE", "Nerve / vascular injury", "Stiffness", "Haemarthrosis", "Cartilage damage (iatrogenic)", "Persistent pain / swelling", "Incomplete symptom relief", "Instrument breakage"],
+  },
+  "Arthroscopy (Shoulder)": {
+    category: "Orthopaedics",
+    risks: ["Stiffness / frozen shoulder", "Nerve injury (axillary / musculocutaneous)", "Infection", "Anchor failure", "Recurrent instability", "Chondrolysis", "CRPS", "Portal site complications"],
+  },
+  "Wound Debridement": {
+    category: "Orthopaedics",
+    risks: ["Infection / sepsis", "Bleeding", "Nerve damage", "Incomplete debridement requiring repeat surgery", "Wound healing failure", "Need for skin graft / flap", "Pain", "Scarring"],
+  },
+  "External Fixator Application": {
+    category: "Orthopaedics",
+    risks: ["Pin site infection", "Pin loosening / breakage", "Malunion / non-union", "Nerve / vascular injury", "Joint stiffness", "Compartment syndrome", "Re-fracture after removal", "Chronic pain"],
+  },
+  "Bone Cement Spacer Insertion": {
+    category: "Orthopaedics",
+    risks: ["Bone cement implantation syndrome", "Spacer dislocation / fracture", "Persistent infection", "Allergic reaction to cement", "Fracture around spacer", "Blood loss", "DVT / PE", "Joint stiffness"],
+  },
+  "Amputation": {
+    category: "Orthopaedics",
+    risks: ["Phantom limb pain", "Wound infection / dehiscence", "Stump neuroma", "Revision surgery required", "Bleeding / haematoma", "DVT / PE", "Psychological impact", "Contracture of proximal joint", "Bone overgrowth (in children)"],
+  },
+  "Tendon Repair": {
+    category: "Orthopaedics",
+    risks: ["Re-rupture", "Adhesion formation / stiffness", "Infection", "Nerve injury", "Suture granuloma", "Weakness / incomplete recovery", "CRPS", "Wound complications"],
+  },
+  "Hip Hemiarthroplasty": {
+    category: "Orthopaedics",
+    risks: ["Dislocation", "Periprosthetic fracture", "Infection", "DVT / PE", "Leg length discrepancy", "Acetabular erosion", "Implant loosening", "Blood loss requiring transfusion", "Sciatic nerve injury"],
+  },
+  "Carpal Tunnel Release": {
+    category: "Orthopaedics",
+    risks: ["Incomplete symptom relief", "Pillar pain", "Scar tenderness", "Nerve injury (median / palmar cutaneous branch)", "Infection", "CRPS", "Grip weakness (temporary)", "Recurrence", "Bowstringing of flexor tendons"],
+  },
+  "Trigger Finger Release": {
+    category: "Orthopaedics",
+    risks: ["Infection", "Digital nerve injury", "Incomplete release", "Stiffness", "Bowstringing", "Recurrence", "Wound complications"],
+  },
+  "Ilizarov / Ring Fixator": {
+    category: "Orthopaedics",
+    risks: ["Pin site infection", "Wire breakage", "Premature consolidation", "Delayed union / non-union", "Joint subluxation", "Nerve / vascular injury", "Equinus deformity", "Muscle contracture", "Prolonged treatment time"],
+  },
+};
+
+const PROCEDURE_NAMES = Object.keys(PROCEDURE_DATABASE);
+
+function getProcedureRisks(procedureName: string): string[] {
+  // Exact match
+  if (PROCEDURE_DATABASE[procedureName]) return PROCEDURE_DATABASE[procedureName].risks;
+  // Partial match
+  const lower = procedureName.toLowerCase();
+  for (const [name, data] of Object.entries(PROCEDURE_DATABASE)) {
+    if (lower.includes(name.toLowerCase()) || name.toLowerCase().includes(lower)) {
+      return data.risks;
+    }
+  }
+  return [];
+}
+
+/* ------------------------------------------------------------------ */
 /*  Shared: Auto-fill complications based on age, gender, comorbidities */
 /* ------------------------------------------------------------------ */
 const COMORBIDITY_OPTIONS = [
@@ -103,23 +196,41 @@ function getAutoComplications(age: string, gender: string, comorbidities: string
 
 /* ─── Shared Patient Demographics Section ─── */
 function PatientDemographicsSection({
-  age, gender, comorbidities,
-  onAgeChange, onGenderChange, onToggleComorbidity,
-  autoRisks, onApplyAutoRisks,
+  age, gender, comorbidities, customComorbidity, procedureName,
+  onAgeChange, onGenderChange, onToggleComorbidity, onCustomComorbidityChange, onAddCustomComorbidity,
+  onProcedureChange, onProcedureSelect,
+  autoRisks, procedureRisks, onApplyAutoRisks, onApplyProcedureRisks,
+  customComplication, onCustomComplicationChange, onAddCustomComplication,
   inputClass,
   tamilLabels,
 }: {
   age: string;
   gender: string;
   comorbidities: string[];
+  customComorbidity: string;
+  procedureName: string;
   onAgeChange: (v: string) => void;
   onGenderChange: (v: string) => void;
   onToggleComorbidity: (c: string) => void;
+  onCustomComorbidityChange: (v: string) => void;
+  onAddCustomComorbidity: () => void;
+  onProcedureChange: (v: string) => void;
+  onProcedureSelect: (v: string) => void;
   autoRisks: string[];
+  procedureRisks: string[];
   onApplyAutoRisks: () => void;
+  onApplyProcedureRisks: () => void;
+  customComplication: string;
+  onCustomComplicationChange: (v: string) => void;
+  onAddCustomComplication: () => void;
   inputClass: string;
   tamilLabels?: boolean;
 }) {
+  const [showProcedureDropdown, setShowProcedureDropdown] = useState(false);
+  const filtered = procedureName
+    ? PROCEDURE_NAMES.filter(p => p.toLowerCase().includes(procedureName.toLowerCase()))
+    : PROCEDURE_NAMES;
+
   return (
     <div className="bg-blue-50/50 border border-blue-200/60 rounded-lg p-5 space-y-4">
       <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider">
@@ -157,6 +268,60 @@ function PatientDemographicsSection({
         <div />
       </div>
 
+      {/* Procedure name with dropdown */}
+      <div className="relative">
+        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+          {tamilLabels ? "செயல்முறை பெயர் / Procedure Name" : "Procedure Name (type to search)"}
+        </label>
+        <input
+          className={`${inputClass} w-full`}
+          placeholder="e.g. Total Knee Replacement"
+          value={procedureName}
+          onChange={e => { onProcedureChange(e.target.value); setShowProcedureDropdown(true); }}
+          onFocus={() => setShowProcedureDropdown(true)}
+          onBlur={() => setTimeout(() => setShowProcedureDropdown(false), 200)}
+        />
+        {showProcedureDropdown && filtered.length > 0 && (
+          <div className="absolute z-20 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+            {filtered.map(p => (
+              <button
+                key={p}
+                onMouseDown={() => { onProcedureSelect(p); setShowProcedureDropdown(false); }}
+                className="w-full text-left px-3 py-2 text-xs hover:bg-teal-50 hover:text-teal-800 transition-colors border-b border-gray-50 last:border-0"
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Procedure-specific risks */}
+      {procedureRisks.length > 0 && (
+        <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-teal-800 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              {procedureRisks.length} procedure-specific risks detected
+            </p>
+            <button
+              onClick={onApplyProcedureRisks}
+              className="text-[10px] font-semibold bg-teal-600 text-white px-2.5 py-1 rounded-full hover:bg-teal-700 transition-colors"
+            >
+              {tamilLabels ? "Add to Risks / சேர்" : "Add to Risks"}
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+            {procedureRisks.map((r, i) => (
+              <p key={i} className="text-xs text-teal-900 flex items-start gap-1.5">
+                <span className="text-teal-500 mt-0.5">•</span> {r}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Comorbidities */}
       <div>
         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
           {tamilLabels ? "ஏற்கனவே உள்ள நோய்கள் / Existing Comorbidities" : "Existing Comorbidities"}
@@ -174,8 +339,26 @@ function PatientDemographicsSection({
             </label>
           ))}
         </div>
+        {/* Custom comorbidity */}
+        <div className="flex items-center gap-2 mt-2">
+          <input
+            className={`${inputClass} flex-1`}
+            placeholder={tamilLabels ? "வேறு நோய் சேர் / Add other comorbidity..." : "Add other comorbidity not listed above..."}
+            value={customComorbidity}
+            onChange={e => onCustomComorbidityChange(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && onAddCustomComorbidity()}
+          />
+          <button
+            onClick={onAddCustomComorbidity}
+            disabled={!customComorbidity.trim()}
+            className="text-[10px] font-semibold bg-blue-600 text-white px-2.5 py-1 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-40"
+          >
+            + Add
+          </button>
+        </div>
       </div>
 
+      {/* Auto-detected complications from comorbidities/age/gender */}
       {autoRisks.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
           <div className="flex items-center justify-between mb-2">
@@ -183,7 +366,7 @@ function PatientDemographicsSection({
               <Sparkles className="w-3.5 h-3.5" />
               {tamilLabels
                 ? `${autoRisks.length} auto-detected complications — சிக்கல்கள் கண்டறியப்பட்டன`
-                : `${autoRisks.length} auto-detected complications based on patient profile`}
+                : `${autoRisks.length} complications based on patient profile`}
             </p>
             <button
               onClick={onApplyAutoRisks}
@@ -192,15 +375,38 @@ function PatientDemographicsSection({
               {tamilLabels ? "Add to Risks / சேர்" : "Add to Risks"}
             </button>
           </div>
-          <ul className="space-y-0.5">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
             {autoRisks.map((r, i) => (
-              <li key={i} className="text-xs text-amber-900 flex items-start gap-1.5">
+              <p key={i} className="text-xs text-amber-900 flex items-start gap-1.5">
                 <span className="text-amber-500 mt-0.5">•</span> {r}
-              </li>
+              </p>
             ))}
-          </ul>
+          </div>
         </div>
       )}
+
+      {/* Custom complication */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+          {tamilLabels ? "கூடுதல் சிக்கல்கள் / Additional Complications" : "Additional Complications (not listed above)"}
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            className={`${inputClass} flex-1`}
+            placeholder={tamilLabels ? "கூடுதல் சிக்கல் சேர்..." : "Type a custom complication and press Add..."}
+            value={customComplication}
+            onChange={e => onCustomComplicationChange(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && onAddCustomComplication()}
+          />
+          <button
+            onClick={onAddCustomComplication}
+            disabled={!customComplication.trim()}
+            className="text-[10px] font-semibold bg-red-600 text-white px-2.5 py-1 rounded-full hover:bg-red-700 transition-colors disabled:opacity-40"
+          >
+            + Add Risk
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -217,6 +423,8 @@ function SurgeryConsentTemplate() {
     age: "",
     gender: "",
     comorbidities: [] as string[],
+    customComorbidity: "",
+    customComplication: "",
     unableReason: "",
     guardianName: "",
     relationship: "",
@@ -353,8 +561,19 @@ function SurgeryConsentTemplate() {
           {/* Patient Demographics + Auto Complications */}
           <PatientDemographicsSection
             age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            customComorbidity={form.customComorbidity} procedureName={form.procedureName}
             onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
-            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks} onApplyAutoRisks={applyAutoRisks}
+            onToggleComorbidity={toggleComorbidity}
+            onCustomComorbidityChange={v => update("customComorbidity", v)}
+            onAddCustomComorbidity={() => { if (form.customComorbidity.trim()) { toggleComorbidity(form.customComorbidity.trim()); update("customComorbidity", ""); } }}
+            onProcedureChange={v => update("procedureName", v)}
+            onProcedureSelect={v => update("procedureName", v)}
+            autoRisks={autoRisks} procedureRisks={getProcedureRisks(form.procedureName)}
+            onApplyAutoRisks={applyAutoRisks}
+            onApplyProcedureRisks={() => setForm(prev => ({ ...prev, risks: [...prev.risks, ...getProcedureRisks(prev.procedureName)] }))}
+            customComplication={form.customComplication}
+            onCustomComplicationChange={v => update("customComplication", v)}
+            onAddCustomComplication={() => { if (form.customComplication.trim()) { setForm(prev => ({ ...prev, risks: [...prev.risks, prev.customComplication.trim()], customComplication: "" })); } }}
             inputClass={inputClass}
           />
 
@@ -606,6 +825,8 @@ function AnaesthesiaConsentTemplate() {
     age: "",
     gender: "",
     comorbidities: [] as string[],
+    customComorbidity: "",
+    customComplication: "",
     procedure: "",
     anaesthesiaType: "",
     patientNameFull: "",
@@ -743,10 +964,19 @@ function AnaesthesiaConsentTemplate() {
           {/* Patient Demographics + Auto Complications */}
           <PatientDemographicsSection
             age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            customComorbidity={form.customComorbidity} procedureName={form.procedure}
             onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
             onToggleComorbidity={toggleComorbidity}
-            autoRisks={autoRisks}
+            onCustomComorbidityChange={v => update("customComorbidity", v)}
+            onAddCustomComorbidity={() => { if ((form.customComorbidity as string).trim()) { toggleComorbidity((form.customComorbidity as string).trim()); update("customComorbidity", ""); } }}
+            onProcedureChange={v => update("procedure", v)}
+            onProcedureSelect={v => update("procedure", v)}
+            autoRisks={autoRisks} procedureRisks={getProcedureRisks(form.procedure)}
             onApplyAutoRisks={() => update("specificRisk", [form.specificRisk, ...autoRisks].filter(Boolean).join("; "))}
+            onApplyProcedureRisks={() => update("specificRisk", [form.specificRisk, ...getProcedureRisks(form.procedure)].filter(Boolean).join("; "))}
+            customComplication={form.customComplication}
+            onCustomComplicationChange={v => update("customComplication", v)}
+            onAddCustomComplication={() => { update("specificRisk", [form.specificRisk, (form.customComplication as string).trim()].filter(Boolean).join("; ")); update("customComplication", ""); }}
             inputClass={inputClass}
           />
 
@@ -941,6 +1171,8 @@ function SurgeryConsentTamilTemplate() {
     age: "",
     gender: "",
     comorbidities: [] as string[],
+    customComorbidity: "",
+    customComplication: "",
     risks: [
       "தொற்று நோய் [Infection]",
       "இரத்தப்போக்கு [Bleeding]",
@@ -1069,8 +1301,19 @@ function SurgeryConsentTamilTemplate() {
           {/* Patient Demographics + Auto Complications */}
           <PatientDemographicsSection
             age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            customComorbidity={form.customComorbidity} procedureName={form.procedureName || ""}
             onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
-            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks} onApplyAutoRisks={applyAutoRisks}
+            onToggleComorbidity={toggleComorbidity}
+            onCustomComorbidityChange={v => update("customComorbidity", v)}
+            onAddCustomComorbidity={() => { if (form.customComorbidity.trim()) { toggleComorbidity(form.customComorbidity.trim()); update("customComorbidity", ""); } }}
+            onProcedureChange={v => update("procedureName", v)}
+            onProcedureSelect={v => update("procedureName", v)}
+            autoRisks={autoRisks} procedureRisks={getProcedureRisks(form.procedureName || "")}
+            onApplyAutoRisks={applyAutoRisks}
+            onApplyProcedureRisks={() => setForm(prev => ({ ...prev, risks: [...prev.risks, ...getProcedureRisks(prev.procedureName || "")] }))}
+            customComplication={form.customComplication}
+            onCustomComplicationChange={v => update("customComplication", v)}
+            onAddCustomComplication={() => { if (form.customComplication.trim()) { setForm(prev => ({ ...prev, risks: [...prev.risks, prev.customComplication.trim()], customComplication: "" })); } }}
             inputClass={inputClass} tamilLabels
           />
 
@@ -1292,6 +1535,8 @@ function AnaesthesiaConsentTamilTemplate() {
     age: "",
     gender: "",
     comorbidities: [] as string[],
+    customComorbidity: "",
+    customComplication: "",
     procedure: "",
     anaesthesiaType: "",
     patientNameFull: "",
@@ -1429,10 +1674,19 @@ function AnaesthesiaConsentTamilTemplate() {
           {/* Patient Demographics + Auto Complications */}
           <PatientDemographicsSection
             age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            customComorbidity={form.customComorbidity} procedureName={form.procedure}
             onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
             onToggleComorbidity={toggleComorbidity}
-            autoRisks={autoRisks}
-            onApplyAutoRisks={() => update("specificRisk", [form.specificRisk as string, ...autoRisks].filter(Boolean).join("; "))}
+            onCustomComorbidityChange={v => update("customComorbidity", v)}
+            onAddCustomComorbidity={() => { if ((form.customComorbidity as string).trim()) { toggleComorbidity((form.customComorbidity as string).trim()); update("customComorbidity", ""); } }}
+            onProcedureChange={v => update("procedure", v)}
+            onProcedureSelect={v => update("procedure", v)}
+            autoRisks={autoRisks} procedureRisks={getProcedureRisks(form.procedure)}
+            onApplyAutoRisks={() => update("specificRisk", [form.specificRisk, ...autoRisks].filter(Boolean).join("; "))}
+            onApplyProcedureRisks={() => update("specificRisk", [form.specificRisk, ...getProcedureRisks(form.procedure)].filter(Boolean).join("; "))}
+            customComplication={form.customComplication}
+            onCustomComplicationChange={v => update("customComplication", v)}
+            onAddCustomComplication={() => { update("specificRisk", [form.specificRisk, (form.customComplication as string).trim()].filter(Boolean).join("; ")); update("customComplication", ""); }}
             inputClass={inputClass} tamilLabels
           />
 
@@ -1628,6 +1882,8 @@ function BloodTransfusionConsentTemplate() {
     age: "",
     gender: "",
     comorbidities: [] as string[],
+    customComorbidity: "",
+    customComplication: "",
     relativeName: "",
     patientSignDate: "",
     relativeSignDate: "",
@@ -1702,9 +1958,17 @@ function BloodTransfusionConsentTemplate() {
           {/* Patient Demographics + Auto Complications */}
           <PatientDemographicsSection
             age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            customComorbidity={form.customComorbidity} procedureName="Blood Transfusion"
             onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
-            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks}
-            onApplyAutoRisks={() => {/* blood transfusion risks are static */}}
+            onToggleComorbidity={toggleComorbidity}
+            onCustomComorbidityChange={v => update("customComorbidity", v)}
+            onAddCustomComorbidity={() => { if (form.customComorbidity.trim()) { toggleComorbidity(form.customComorbidity.trim()); update("customComorbidity", ""); } }}
+            onProcedureChange={() => {}} onProcedureSelect={() => {}}
+            autoRisks={autoRisks} procedureRisks={[]}
+            onApplyAutoRisks={() => {}} onApplyProcedureRisks={() => {}}
+            customComplication={form.customComplication}
+            onCustomComplicationChange={v => update("customComplication", v)}
+            onAddCustomComplication={() => {}}
             inputClass={inputClass}
           />
 
@@ -1818,6 +2082,8 @@ function BloodTransfusionConsentTamilTemplate() {
     age: "",
     gender: "",
     comorbidities: [] as string[],
+    customComorbidity: "",
+    customComplication: "",
     relativeName: "",
     patientSignDate: "",
     relativeSignDate: "",
@@ -1895,9 +2161,17 @@ function BloodTransfusionConsentTamilTemplate() {
           {/* Patient Demographics + Auto Complications */}
           <PatientDemographicsSection
             age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            customComorbidity={form.customComorbidity} procedureName="Blood Transfusion"
             onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
-            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks}
-            onApplyAutoRisks={() => {/* blood transfusion risks are static */}}
+            onToggleComorbidity={toggleComorbidity}
+            onCustomComorbidityChange={v => update("customComorbidity", v)}
+            onAddCustomComorbidity={() => { if (form.customComorbidity.trim()) { toggleComorbidity(form.customComorbidity.trim()); update("customComorbidity", ""); } }}
+            onProcedureChange={() => {}} onProcedureSelect={() => {}}
+            autoRisks={autoRisks} procedureRisks={[]}
+            onApplyAutoRisks={() => {}} onApplyProcedureRisks={() => {}}
+            customComplication={form.customComplication}
+            onCustomComplicationChange={v => update("customComplication", v)}
+            onAddCustomComplication={() => {}}
             inputClass={inputClass} tamilLabels
           />
 
