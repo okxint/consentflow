@@ -46,8 +46,8 @@ export default function FormDetail() {
             <div ref={printRef} className="print-area border border-gray-200 rounded p-8 bg-white">
               {/* Letterhead */}
               <div className="text-center border-b-2 border-[var(--color-primary)] pb-4 mb-6">
-                <h2 className="text-xl font-bold text-[var(--color-primary)]">MGMCRI</h2>
-                <p className="text-xs text-[var(--color-muted)]">Pondicherry | NABH-H-2024-0156</p>
+                <h2 className="text-xl font-bold text-[var(--color-primary)]">City General Hospital</h2>
+                <p className="text-xs text-[var(--color-muted)]">Chennai | NABH Accredited</p>
                 <p className="text-sm font-semibold mt-2">INFORMED CONSENT FOR SURGICAL PROCEDURE</p>
               </div>
 

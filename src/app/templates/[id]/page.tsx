@@ -55,8 +55,8 @@ function SurgeryConsentTemplate() {
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
-              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+              <h1 className="text-lg font-bold tracking-wide">CITY GENERAL HOSPITAL</h1>
+              <p className="text-teal-100 text-sm">A Unit of Demo Medical University &mdash; Chennai</p>
             </div>
           </div>
         </div>
@@ -215,7 +215,7 @@ function SurgeryConsentTemplate() {
             <p className="text-xs text-gray-800 leading-relaxed font-semibold">
               As with any procedure I am aware that risks such as change in blood pressure, anesthetic allergic reactions,
               blood loss, infection, heart failure, cardiac arrest including death, paralysis, ICU care, post-operative period
-              etc. may arise necessitating attention. I also state that my or my family shall not hold MGMCRI or its doctors
+              etc. may arise necessitating attention. I also state that my or my family shall not hold the hospital or its doctors
               responsible for any consequences whatsoever arising out of the above said procedure being performed on me / patient.
             </p>
           </div>
@@ -435,8 +435,8 @@ function AnaesthesiaConsentTemplate() {
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
-              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+              <h1 className="text-lg font-bold tracking-wide">CITY GENERAL HOSPITAL</h1>
+              <p className="text-teal-100 text-sm">A Unit of Demo Medical University &mdash; Chennai</p>
             </div>
           </div>
         </div>
@@ -564,8 +564,8 @@ function AnaesthesiaConsentTemplate() {
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <p className="text-xs text-gray-600 leading-relaxed">
               I hereby consent to the anaesthetic service checked above and authorize that it be administered by
-              Anaesthesiologist of all cadres who are instructed to provide anaesthetic services at Mahatma Gandhi
-              Medical College &amp; Research Institute. I understand that monitoring devices may be utilized as deemed
+              Anaesthesiologist of all cadres who are instructed to provide anaesthetic services at this hospital.
+              I understand that monitoring devices may be utilized as deemed
               necessary and I consent to their use. I have been given the opportunity to ask questions and all my
               questions have been answered to my satisfaction.
             </p>
@@ -731,8 +731,8 @@ function SurgeryConsentTamilTemplate() {
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
-              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+              <h1 className="text-lg font-bold tracking-wide">CITY GENERAL HOSPITAL</h1>
+              <p className="text-teal-100 text-sm">A Unit of Demo Medical University &mdash; Chennai</p>
             </div>
           </div>
         </div>
@@ -851,7 +851,7 @@ function SurgeryConsentTamilTemplate() {
               எந்தவொரு செயல்முறையிலும் இரத்த அழுத்த மாற்றங்கள், மயக்க மருந்து ஒவ்வாமை எதிர்வினைகள்,
               இரத்தப்போக்கு, தொற்று, இதய செயலிழப்பு, இதய நிறுத்தம் மற்றும் மரணம் உட்பட, பக்கவாதம்,
               தீவிர சிகிச்சை பிரிவு (ICU) பராமரிப்பு ஆகிய ஆபத்துகள் ஏற்படலாம் என்பதை நான் அறிவேன்.
-              நான் அல்லது எனது குடும்பம் MGMCRI அல்லது அதன் மருத்துவர்களை மேற்கண்ட செயல்முறையின்
+              நான் அல்லது எனது குடும்பம் மருத்துவமனை அல்லது அதன் மருத்துவர்களை மேற்கண்ட செயல்முறையின்
               விளைவுகளுக்கு பொறுப்பாக்க மாட்டோம்.
             </p>
           </div>
@@ -1071,8 +1071,8 @@ function AnaesthesiaConsentTamilTemplate() {
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
-              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+              <h1 className="text-lg font-bold tracking-wide">CITY GENERAL HOSPITAL</h1>
+              <p className="text-teal-100 text-sm">A Unit of Demo Medical University &mdash; Chennai</p>
             </div>
           </div>
         </div>
@@ -1200,7 +1200,7 @@ function AnaesthesiaConsentTamilTemplate() {
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <p className="text-xs text-gray-600 leading-relaxed">
               மேலே குறிப்பிடப்பட்ட மயக்க மருந்து சேவைக்கு நான் ஒப்புதல் அளிக்கிறேன், மேலும் இது
-              மகாத்மா காந்தி மருத்துவக் கல்லூரி மற்றும் ஆராய்ச்சி நிறுவனத்தில் (Mahatma Gandhi Medical College &amp; Research Institute)
+              இந்த மருத்துவமனையில் (this hospital)
               மயக்க மருந்து சேவைகளை வழங்க அறிவுறுத்தப்பட்ட அனைத்து நிலை மயக்க மருந்து நிபுணர்களால்
               (Anaesthesiologist of all cadres) செலுத்தப்படலாம் என்பதை அங்கீகரிக்கிறேன்.
               கண்காணிப்பு சாதனங்கள் தேவையெனில் பயன்படுத்தப்படலாம் என்பதை நான் புரிந்துகொள்கிறேன்.
@@ -1347,8 +1347,8 @@ function BloodTransfusionConsentTemplate() {
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
-              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+              <h1 className="text-lg font-bold tracking-wide">CITY GENERAL HOSPITAL</h1>
+              <p className="text-teal-100 text-sm">A Unit of Demo Medical University &mdash; Chennai</p>
             </div>
           </div>
         </div>
@@ -1514,8 +1514,8 @@ function BloodTransfusionConsentTamilTemplate() {
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">MAHATMA GANDHI MEDICAL COLLEGE &amp; RESEARCH INSTITUTE</h1>
-              <p className="text-teal-100 text-sm">Sri Balaji Vidyapeeth (Deemed to be University) &mdash; Pondicherry</p>
+              <h1 className="text-lg font-bold tracking-wide">CITY GENERAL HOSPITAL</h1>
+              <p className="text-teal-100 text-sm">A Unit of Demo Medical University &mdash; Chennai</p>
             </div>
           </div>
         </div>
@@ -1673,7 +1673,7 @@ function ComingSoon({ id }: { id: string }) {
           {nameMap[id] || "Template"}
         </h2>
         <p className="text-sm text-gray-500 mb-6">
-          Template preview coming soon. This form is being digitized from the MGMCRI hospital records.
+          Template preview coming soon. This form is being digitized from the hospital records.
         </p>
         <Link
           href="/templates"

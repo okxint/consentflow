@@ -52,42 +52,42 @@ export interface ConsentRecord {
 
 const hospitals: Hospital[] = [
   {
-    id: "mgmcri",
-    name: "Mahatma Gandhi Medical College & Research Institute",
-    location: "Pondicherry",
-    nabhId: "NABH-H-2024-0156",
+    id: "citygeneral",
+    name: "City General Hospital",
+    location: "Chennai",
+    nabhId: "NABH-H-2024-XXXX",
   },
 ];
 
 const doctors: Doctor[] = [
   {
     id: "dr-vishnu",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
     name: "Dr. B. Vishnu Vardhan",
     designation: "MS Orthopaedics",
     department: "Orthopaedics",
     initials: "BV",
-    email: "vishnu.v@mgmcri.ac.in",
+    email: "vishnu.v@hospital.in",
     savedSignature: true,
   },
   {
     id: "dr-priya",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
     name: "Dr. Priya Sharma",
     designation: "MS General Surgery",
     department: "General Surgery",
     initials: "PS",
-    email: "priya.s@mgmcri.ac.in",
+    email: "priya.s@hospital.in",
     savedSignature: true,
   },
   {
     id: "dr-anand",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
     name: "Dr. R. Anand",
     designation: "MD Anaesthesia",
     department: "Anaesthesiology",
     initials: "RA",
-    email: "anand.r@mgmcri.ac.in",
+    email: "anand.r@hospital.in",
     savedSignature: true,
   },
 ];
@@ -95,36 +95,36 @@ const doctors: Doctor[] = [
 const patients: Patient[] = [
   {
     id: "p-001",
-    uhid: "MGMCRI-2026-4518",
+    uhid: "CGH-2026-4518",
     name: "Rajesh Kumar",
     age: 47,
     gender: "Male",
     phone: "+91 98412 33456",
     bloodGroup: "O+",
     doctorId: "dr-vishnu",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
   },
   {
     id: "p-002",
-    uhid: "MGMCRI-2026-4521",
+    uhid: "CGH-2026-4521",
     name: "Selvam M",
     age: 55,
     gender: "Male",
     phone: "+91 99001 45678",
     bloodGroup: "B+",
     doctorId: "dr-vishnu",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
   },
   {
     id: "p-003",
-    uhid: "MGMCRI-2026-4525",
+    uhid: "CGH-2026-4525",
     name: "Lakshmi Devi",
     age: 62,
     gender: "Female",
     phone: "+91 98765 43210",
     bloodGroup: "A+",
     doctorId: "dr-priya",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
   },
 ];
 
@@ -133,12 +133,12 @@ const consentRecords: ConsentRecord[] = [
     id: "cr-001",
     patientId: "p-001",
     patientName: "Rajesh Kumar",
-    uhid: "MGMCRI-2026-4518",
+    uhid: "CGH-2026-4518",
     operation: "Total Knee Replacement",
     diagnosis: "Severe osteoarthritis of the right knee with grade IV cartilage loss",
     status: "signed",
     doctorId: "dr-vishnu",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
     createdAt: "2026-04-03T10:00:00",
     sentAt: "2026-04-03T10:05:00",
     signedAt: "2026-04-03T14:30:00",
@@ -151,12 +151,12 @@ const consentRecords: ConsentRecord[] = [
     id: "cr-002",
     patientId: "p-002",
     patientName: "Selvam M",
-    uhid: "MGMCRI-2026-4521",
+    uhid: "CGH-2026-4521",
     operation: "Wound Debridement + Bone Cement Spacer + External Fixator",
     diagnosis: "1st Metatarsophalangeal Joint Charcot's",
     status: "pending_patient",
     doctorId: "dr-vishnu",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
     createdAt: "2026-04-04T04:00:00",
     sentAt: "2026-04-04T04:05:00",
     scheduledDate: "2026-04-05T11:00",
@@ -168,12 +168,12 @@ const consentRecords: ConsentRecord[] = [
     id: "cr-003",
     patientId: "p-003",
     patientName: "Lakshmi Devi",
-    uhid: "MGMCRI-2026-4525",
+    uhid: "CGH-2026-4525",
     operation: "Laparoscopic Cholecystectomy",
     diagnosis: "Symptomatic cholelithiasis",
     status: "draft",
     doctorId: "dr-priya",
-    hospitalId: "mgmcri",
+    hospitalId: "citygeneral",
     createdAt: "2026-04-04T08:00:00",
     scheduledDate: "2026-04-06T10:00",
     anesthesiaConsent: true,
@@ -185,7 +185,7 @@ const consentRecords: ConsentRecord[] = [
 // --- Exported functions ---
 
 export function getHospital(id?: string): Hospital {
-  return hospitals.find((h) => h.id === (id || "mgmcri")) || hospitals[0];
+  return hospitals.find((h) => h.id === (id || "citygeneral")) || hospitals[0];
 }
 
 export function getHospitals(): Hospital[] {

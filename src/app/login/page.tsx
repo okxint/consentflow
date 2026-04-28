@@ -244,7 +244,7 @@ export default function LoginPage() {
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white font-bold text-sm shrink-0">
-                        MG
+                        CG
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm leading-tight">{hospital.name}</p>
@@ -296,7 +296,7 @@ export default function LoginPage() {
           {/* Step 2: Doctor Select */}
           {step === 2 && selectedHospital && (
             <div>
-              <h1 className="text-2xl font-bold text-center mb-1">Welcome to MGMCRI</h1>
+              <h1 className="text-2xl font-bold text-center mb-1">Welcome to {selectedHospital.name}</h1>
               <p className="text-sm text-[var(--color-text-secondary)] text-center mb-8">
                 Select your profile
               </p>

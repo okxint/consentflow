@@ -9,13 +9,13 @@ export default function OTBoard() {
   const [showF11Hint, setShowF11Hint] = useState(true);
 
   useEffect(() => {
-    document.title = "OT Board — MGMCRI";
+    document.title = "OT Board — City General Hospital";
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     const hintTimer = setTimeout(() => setShowF11Hint(false), 5000);
     return () => { clearInterval(interval); clearTimeout(hintTimer); };
   }, []);
 
-  const forms = getAllConsentForms("mgmcri");
+  const forms = getAllConsentForms("citygeneral");
 
   // Build surgery cards from consent records
   const surgeries = forms.map(form => {
@@ -72,7 +72,7 @@ export default function OTBoard() {
           <div className="w-8 h-8 rounded-lg bg-[#0d9488] flex items-center justify-center">
             <span className="text-white text-xs font-bold">MG</span>
           </div>
-          <span className="text-white font-semibold">MGMCRI</span>
+          <span className="text-white font-semibold">City General Hospital</span>
         </div>
 
         <h1 className="text-white text-lg font-bold tracking-wide">

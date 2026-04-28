@@ -145,7 +145,7 @@ export default function Templates() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold">Form Templates</h1>
-              <p className="text-[var(--color-text-secondary)] text-sm mt-1">MGMCRI Hospital, Pondicherry — Standardized consent forms</p>
+              <p className="text-[var(--color-text-secondary)] text-sm mt-1">City General Hospital — Standardized consent forms</p>
             </div>
             <div className="flex gap-2">
               <Link href="/templates/upload" className="inline-flex items-center gap-2 border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-teal-50 transition-colors">

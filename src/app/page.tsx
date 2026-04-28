@@ -369,7 +369,7 @@ export default function Home() {
                         <div className="flex justify-between items-center"><span className="text-gray-400">Patient</span><span className="font-medium text-gray-700">Selvam M</span></div>
                         <div className="flex justify-between items-center"><span className="text-gray-400">Procedure</span><span className="font-medium text-gray-700">Wound Debridement</span></div>
                         <div className="flex justify-between items-center"><span className="text-gray-400">Surgeon</span><span className="font-medium text-gray-700">Dr. Vishnu Vardhan</span></div>
-                        <div className="flex justify-between items-center"><span className="text-gray-400">Template</span><span className="text-teal-600 font-medium">MGMCRI Surgery ✓</span></div>
+                        <div className="flex justify-between items-center"><span className="text-gray-400">Template</span><span className="text-teal-600 font-medium">General Surgery ✓</span></div>
                       </div>
                       <div className="mt-3 flex gap-2">
                         <div className="h-7 bg-gray-900 text-white rounded-full px-4 flex items-center text-[10px] font-medium">Send via WhatsApp</div>
@@ -453,7 +453,7 @@ export default function Home() {
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded bg-teal-600 flex items-center justify-center"><FileText className="w-3 h-3 text-white" /></div>
-                            <span className="text-xs font-semibold text-gray-700">MGMCRI Consent</span>
+                            <span className="text-xs font-semibold text-gray-700">Surgical Consent</span>
                           </div>
                           <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">COMPLETE</span>
                         </div>
@@ -467,7 +467,7 @@ export default function Home() {
                       <div className="px-4 py-3 flex items-center justify-between bg-white">
                         <div>
                           <p className="text-[11px] font-medium text-gray-700">Selvam M</p>
-                          <p className="text-[10px] text-gray-400">MGMCRI-2026-4521 · Apr 8, 2026</p>
+                          <p className="text-[10px] text-gray-400">CGH-2026-4521 · Apr 8, 2026</p>
                         </div>
                         <div className="w-10 h-10 bg-gray-100 rounded border border-gray-200 flex items-center justify-center">
                           <span className="text-[7px] text-gray-400 font-mono leading-none text-center">QR<br/>Code</span>

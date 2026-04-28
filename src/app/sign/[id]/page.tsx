@@ -64,7 +64,7 @@ export default function PatientSign() {
       <header className="bg-white border-b border-[var(--color-border)] py-4">
         <div className="max-w-2xl mx-auto px-4 flex items-center justify-between">
           <div className="text-center flex-1">
-            <h1 className="text-lg font-bold text-[var(--color-primary)]">MGMCRI</h1>
+            <h1 className="text-lg font-bold text-[var(--color-primary)]">City General Hospital</h1>
             <p className="text-xs text-[var(--color-muted)]">Operation Consent Form</p>
           </div>
           <select
