@@ -58,9 +58,14 @@ main, [data-page] {
     margin: 15mm 12mm;
   }
 
-  /* Hide sidebar, nav, action buttons */
+  /* Hide sidebar, nav, action buttons, interactive UI */
   aside, nav, .print\:hidden {
     display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print\:block {
+    display: block !important;
   }
 
   /* Full width content */
@@ -123,7 +128,47 @@ main, [data-page] {
   }
 
   /* Hide breadcrumb bar */
-  .border-b.bg-white .flex.items-center.gap-2 {
+  .border-b.bg-white {
+    display: none !important;
+  }
+
+  /* Compact spacing for 1-page fit */
+  .space-y-6 > * {
+    margin-top: 0.5rem !important;
+  }
+  .py-6 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  .px-8 {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+  .mb-6, .mb-8 {
+    margin-bottom: 0.5rem !important;
+  }
+  .p-4 {
+    padding: 0.5rem !important;
+  }
+  .rounded-lg, .rounded-xl {
+    border-radius: 4px !important;
+  }
+
+  /* Smaller text for fitting */
+  .text-xs {
+    font-size: 10px !important;
+  }
+  .text-sm {
+    font-size: 11px !important;
+  }
+
+  /* Signature areas compact */
+  .h-16 {
+    height: 2rem !important;
+  }
+
+  /* Hide the hidden class on print */
+  .hidden:not(.print\:block) {
     display: none !important;
   }
 }

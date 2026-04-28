@@ -239,7 +239,27 @@ function PatientDemographicsSection({
   const allProfileComplications = autoRisks;
 
   return (
-    <div className="bg-blue-50/50 border border-blue-200/60 rounded-lg p-5 space-y-5">
+    <>
+    {/* ── Print-only: compact summary of filled values ── */}
+    <div className="hidden print:block border border-gray-300 rounded-lg p-4 text-xs space-y-2">
+      <div className="grid grid-cols-3 gap-2">
+        {age && <div><span className="font-semibold text-gray-500">Age:</span> <span className="font-medium">{age}</span></div>}
+        {gender && <div><span className="font-semibold text-gray-500">Gender:</span> <span className="font-medium">{gender}</span></div>}
+        {procedureName && <div><span className="font-semibold text-gray-500">Procedure:</span> <span className="font-medium">{procedureName}</span></div>}
+      </div>
+      {comorbidities.length > 0 && (
+        <div><span className="font-semibold text-gray-500">Comorbidities:</span> <span className="font-medium">{comorbidities.join(", ")}</span></div>
+      )}
+      {selectedComplications.length > 0 && (
+        <div>
+          <span className="font-semibold text-gray-500">Complications:</span>
+          <span className="font-medium"> {selectedComplications.join(", ")}</span>
+        </div>
+      )}
+    </div>
+
+    {/* ── Screen-only: full interactive selection UI ── */}
+    <div className="bg-blue-50/50 border border-blue-200/60 rounded-lg p-5 space-y-5 print:hidden">
       <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider">
         {tamilLabels ? "நோயாளி விவரங்கள் — Patient Demographics" : "Patient Demographics"}
       </h3>
@@ -468,6 +488,7 @@ function PatientDemographicsSection({
         </div>
       )}
     </div>
+    </>
   );
 }
 
