@@ -1,8 +1,209 @@
 "use client";
 import { Sidebar } from "@/components/Sidebar";
-import { use, useState } from "react";
+import { use, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ChevronRight, FileText } from "lucide-react";
+import { ChevronRight, FileText, Sparkles } from "lucide-react";
+
+/* ------------------------------------------------------------------ */
+/*  Shared: Auto-fill complications based on age, gender, comorbidities */
+/* ------------------------------------------------------------------ */
+const COMORBIDITY_OPTIONS = [
+  "Diabetes Mellitus",
+  "Hypertension",
+  "Coronary Artery Disease",
+  "Chronic Kidney Disease",
+  "COPD / Asthma",
+  "Obesity (BMI > 30)",
+  "Liver Disease",
+  "Bleeding Disorders",
+  "Immunocompromised",
+  "Previous DVT / PE",
+  "Stroke History",
+  "Thyroid Disorder",
+];
+
+function getAutoComplications(age: string, gender: string, comorbidities: string[]): string[] {
+  const ageNum = parseInt(age) || 0;
+  const risks: string[] = [];
+
+  // Age-based
+  if (ageNum >= 65) {
+    risks.push("Delayed wound healing (elderly)");
+    risks.push("Higher risk of post-op delirium");
+    risks.push("Increased fall risk post-procedure");
+  } else if (ageNum >= 50) {
+    risks.push("Age-related slower recovery");
+  }
+  if (ageNum < 18) {
+    risks.push("Growth plate / developmental considerations");
+  }
+
+  // Gender-based
+  if (gender === "Female" && ageNum >= 15 && ageNum <= 50) {
+    risks.push("Pregnancy must be ruled out before procedure");
+  }
+  if (gender === "Female" && ageNum >= 50) {
+    risks.push("Osteoporosis-related fracture risk");
+  }
+  if (gender === "Male" && ageNum >= 50) {
+    risks.push("Higher cardiovascular event risk");
+  }
+
+  // Comorbidity-based
+  if (comorbidities.includes("Diabetes Mellitus")) {
+    risks.push("Impaired wound healing / surgical site infection");
+    risks.push("Hypoglycemia / hyperglycemia peri-operatively");
+  }
+  if (comorbidities.includes("Hypertension")) {
+    risks.push("Intra-operative blood pressure fluctuations");
+    risks.push("Higher bleeding risk");
+  }
+  if (comorbidities.includes("Coronary Artery Disease")) {
+    risks.push("Risk of myocardial infarction peri-operatively");
+    risks.push("Cardiac arrhythmias under anaesthesia");
+  }
+  if (comorbidities.includes("Chronic Kidney Disease")) {
+    risks.push("Electrolyte imbalance / fluid overload");
+    risks.push("Drug clearance issues — dose adjustments needed");
+  }
+  if (comorbidities.includes("COPD / Asthma")) {
+    risks.push("Bronchospasm during / after anaesthesia");
+    risks.push("Post-op respiratory failure / prolonged ventilation");
+  }
+  if (comorbidities.includes("Obesity (BMI > 30)")) {
+    risks.push("Difficult airway / intubation");
+    risks.push("Deep vein thrombosis (DVT)");
+    risks.push("Wound dehiscence");
+  }
+  if (comorbidities.includes("Liver Disease")) {
+    risks.push("Coagulopathy / excessive bleeding");
+    risks.push("Impaired drug metabolism");
+  }
+  if (comorbidities.includes("Bleeding Disorders")) {
+    risks.push("Uncontrolled hemorrhage");
+    risks.push("Need for blood product transfusion");
+  }
+  if (comorbidities.includes("Immunocompromised")) {
+    risks.push("Severe post-operative infection");
+    risks.push("Delayed / impaired healing");
+  }
+  if (comorbidities.includes("Previous DVT / PE")) {
+    risks.push("Recurrent deep vein thrombosis");
+    risks.push("Pulmonary embolism");
+  }
+  if (comorbidities.includes("Stroke History")) {
+    risks.push("Risk of recurrent cerebrovascular event");
+  }
+  if (comorbidities.includes("Thyroid Disorder")) {
+    risks.push("Thyroid storm / myxedema coma risk");
+  }
+
+  return risks;
+}
+
+/* ─── Shared Patient Demographics Section ─── */
+function PatientDemographicsSection({
+  age, gender, comorbidities,
+  onAgeChange, onGenderChange, onToggleComorbidity,
+  autoRisks, onApplyAutoRisks,
+  inputClass,
+  tamilLabels,
+}: {
+  age: string;
+  gender: string;
+  comorbidities: string[];
+  onAgeChange: (v: string) => void;
+  onGenderChange: (v: string) => void;
+  onToggleComorbidity: (c: string) => void;
+  autoRisks: string[];
+  onApplyAutoRisks: () => void;
+  inputClass: string;
+  tamilLabels?: boolean;
+}) {
+  return (
+    <div className="bg-blue-50/50 border border-blue-200/60 rounded-lg p-5 space-y-4">
+      <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider">
+        {tamilLabels ? "நோயாளி விவரங்கள் — Patient Demographics" : "Patient Demographics"}
+      </h3>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            {tamilLabels ? "வயது / Age" : "Age"}
+          </label>
+          <input
+            className={`${inputClass} w-full`}
+            type="number"
+            placeholder="e.g. 45"
+            value={age}
+            onChange={e => onAgeChange(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            {tamilLabels ? "பாலினம் / Gender" : "Gender"}
+          </label>
+          <select
+            className={`${inputClass} w-full`}
+            value={gender}
+            onChange={e => onGenderChange(e.target.value)}
+          >
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div />
+      </div>
+
+      <div>
+        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          {tamilLabels ? "ஏற்கனவே உள்ள நோய்கள் / Existing Comorbidities" : "Existing Comorbidities"}
+        </label>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+          {COMORBIDITY_OPTIONS.map(c => (
+            <label key={c} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={comorbidities.includes(c)}
+                onChange={() => onToggleComorbidity(c)}
+                className="w-3.5 h-3.5 rounded border-gray-300 text-[var(--color-primary)]"
+              />
+              <span className="text-xs text-gray-700">{c}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {autoRisks.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              {tamilLabels
+                ? `${autoRisks.length} auto-detected complications — சிக்கல்கள் கண்டறியப்பட்டன`
+                : `${autoRisks.length} auto-detected complications based on patient profile`}
+            </p>
+            <button
+              onClick={onApplyAutoRisks}
+              className="text-[10px] font-semibold bg-amber-600 text-white px-2.5 py-1 rounded-full hover:bg-amber-700 transition-colors"
+            >
+              {tamilLabels ? "Add to Risks / சேர்" : "Add to Risks"}
+            </button>
+          </div>
+          <ul className="space-y-0.5">
+            {autoRisks.map((r, i) => (
+              <li key={i} className="text-xs text-amber-900 flex items-start gap-1.5">
+                <span className="text-amber-500 mt-0.5">•</span> {r}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /*  Template A — Consent for Procedure / Surgery, High Risk Consent   */
@@ -13,25 +214,44 @@ function SurgeryConsentTemplate() {
     procedureName: "",
     indication: "",
     patientName: "",
+    age: "",
+    gender: "",
+    comorbidities: [] as string[],
     unableReason: "",
     guardianName: "",
     relationship: "",
     risks: ["Infection", "Bleeding / Haematoma", "Graft Failure", "Nerve Damage", "Vascular Damage", "Joint Stiffness"],
     surgeonName: "",
-    // Signature section
     sigPatientName: "",
     sigPatientDate: "",
     sigWitnessName: "",
     sigWitnessDate: "",
     sigSurgeonName: "",
     sigSurgeonDate: "",
-    // Postponement review
     reviewPatientName: "",
     reviewDate: "",
   });
 
+  const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
+
   function update(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function toggleComorbidity(c: string) {
+    setForm(prev => ({
+      ...prev,
+      comorbidities: prev.comorbidities.includes(c)
+        ? prev.comorbidities.filter(x => x !== c)
+        : [...prev.comorbidities, c],
+    }));
+  }
+
+  function applyAutoRisks() {
+    setForm(prev => ({
+      ...prev,
+      risks: [...prev.risks, ...autoRisks],
+    }));
   }
 
   function updateRisk(index: number, value: string) {
@@ -128,7 +348,17 @@ function SurgeryConsentTemplate() {
                 onChange={e => update("patientName", e.target.value)}
               />
             </div>
+          </div>
 
+          {/* Patient Demographics + Auto Complications */}
+          <PatientDemographicsSection
+            age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
+            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks} onApplyAutoRisks={applyAutoRisks}
+            inputClass={inputClass}
+          />
+
+          <div className="space-y-4 text-sm leading-relaxed text-gray-800">
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 The patient is unable to give consent because
@@ -373,16 +603,17 @@ function SurgeryConsentTemplate() {
 function AnaesthesiaConsentTemplate() {
   const [form, setForm] = useState({
     patientName: "",
+    age: "",
+    gender: "",
+    comorbidities: [] as string[],
     procedure: "",
     anaesthesiaType: "",
     patientNameFull: "",
-    // Checkboxes for anaesthesia types
     generalAnaesthesia: false,
     spinalEpidural: false,
     nerveBlocks: false,
     monitoredCare: false,
     specificRisk: "",
-    // Signatures
     sigPatientName: "",
     sigPatientDate: "",
     sigParentName: "",
@@ -391,8 +622,19 @@ function AnaesthesiaConsentTemplate() {
     sigAnaesthesiologistDate: "",
   });
 
+  const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
+
   function update(field: string, value: string | boolean) {
     setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function toggleComorbidity(c: string) {
+    setForm(prev => ({
+      ...prev,
+      comorbidities: prev.comorbidities.includes(c)
+        ? prev.comorbidities.filter(x => x !== c)
+        : [...prev.comorbidities, c],
+    }));
   }
 
   const inputClass = "border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors";
@@ -497,6 +739,16 @@ function AnaesthesiaConsentTemplate() {
               </div>
             </div>
           </div>
+
+          {/* Patient Demographics + Auto Complications */}
+          <PatientDemographicsSection
+            age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
+            onToggleComorbidity={toggleComorbidity}
+            autoRisks={autoRisks}
+            onApplyAutoRisks={() => update("specificRisk", [form.specificRisk, ...autoRisks].filter(Boolean).join("; "))}
+            inputClass={inputClass}
+          />
 
           {/* Consent paragraph */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
@@ -686,6 +938,9 @@ function SurgeryConsentTamilTemplate() {
     procedureName: "",
     diagnosis: "",
     surgeonName: "",
+    age: "",
+    gender: "",
+    comorbidities: [] as string[],
     risks: [
       "தொற்று நோய் [Infection]",
       "இரத்தப்போக்கு [Bleeding]",
@@ -694,20 +949,36 @@ function SurgeryConsentTamilTemplate() {
       "மயக்க மருந்து சிக்கல்கள் [Anaesthesia Complications]",
       "செயற்கை உறுப்பு தோல்வி [Implant Failure]",
     ],
-    // Signatures
     sigPatientName: "",
     sigPatientDate: "",
     sigWitnessName: "",
     sigWitnessDate: "",
     sigSurgeonName: "",
     sigSurgeonDate: "",
-    // Postponement review
     reviewPatientName: "",
     reviewDate: "",
   });
 
+  const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
+
   function update(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function toggleComorbidity(c: string) {
+    setForm(prev => ({
+      ...prev,
+      comorbidities: prev.comorbidities.includes(c)
+        ? prev.comorbidities.filter(x => x !== c)
+        : [...prev.comorbidities, c],
+    }));
+  }
+
+  function applyAutoRisks() {
+    setForm(prev => ({
+      ...prev,
+      risks: [...prev.risks, ...autoRisks],
+    }));
   }
 
   function updateRisk(index: number, value: string) {
@@ -794,6 +1065,14 @@ function SurgeryConsentTamilTemplate() {
               />
             </div>
           </div>
+
+          {/* Patient Demographics + Auto Complications */}
+          <PatientDemographicsSection
+            age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
+            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks} onApplyAutoRisks={applyAutoRisks}
+            inputClass={inputClass} tamilLabels
+          />
 
           {/* Information paragraph */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
@@ -1010,6 +1289,9 @@ function SurgeryConsentTamilTemplate() {
 function AnaesthesiaConsentTamilTemplate() {
   const [form, setForm] = useState({
     patientName: "",
+    age: "",
+    gender: "",
+    comorbidities: [] as string[],
     procedure: "",
     anaesthesiaType: "",
     patientNameFull: "",
@@ -1018,7 +1300,6 @@ function AnaesthesiaConsentTamilTemplate() {
     nerveBlocks: false,
     monitoredCare: false,
     specificRisk: "",
-    // Signatures
     sigPatientName: "",
     sigPatientDate: "",
     sigParentName: "",
@@ -1027,8 +1308,19 @@ function AnaesthesiaConsentTamilTemplate() {
     sigAnaesthesiologistDate: "",
   });
 
+  const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
+
   function update(field: string, value: string | boolean) {
     setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function toggleComorbidity(c: string) {
+    setForm(prev => ({
+      ...prev,
+      comorbidities: prev.comorbidities.includes(c)
+        ? prev.comorbidities.filter(x => x !== c)
+        : [...prev.comorbidities, c],
+    }));
   }
 
   const inputClass = "border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors";
@@ -1133,6 +1425,16 @@ function AnaesthesiaConsentTamilTemplate() {
               </div>
             </div>
           </div>
+
+          {/* Patient Demographics + Auto Complications */}
+          <PatientDemographicsSection
+            age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
+            onToggleComorbidity={toggleComorbidity}
+            autoRisks={autoRisks}
+            onApplyAutoRisks={() => update("specificRisk", [form.specificRisk as string, ...autoRisks].filter(Boolean).join("; "))}
+            inputClass={inputClass} tamilLabels
+          />
 
           {/* Consent paragraph */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
@@ -1323,6 +1625,9 @@ function BloodTransfusionConsentTemplate() {
     hospitalNo: "",
     doctorName: "",
     patientName: "",
+    age: "",
+    gender: "",
+    comorbidities: [] as string[],
     relativeName: "",
     patientSignDate: "",
     relativeSignDate: "",
@@ -1331,8 +1636,19 @@ function BloodTransfusionConsentTemplate() {
     emergencyDoctorTime: "",
   });
 
+  const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
+
   function update(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function toggleComorbidity(c: string) {
+    setForm(prev => ({
+      ...prev,
+      comorbidities: prev.comorbidities.includes(c)
+        ? prev.comorbidities.filter(x => x !== c)
+        : [...prev.comorbidities, c],
+    }));
   }
 
   const inputClass = "border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors";
@@ -1382,6 +1698,15 @@ function BloodTransfusionConsentTemplate() {
               transfusion in the language I understand.
             </p>
           </div>
+
+          {/* Patient Demographics + Auto Complications */}
+          <PatientDemographicsSection
+            age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
+            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks}
+            onApplyAutoRisks={() => {/* blood transfusion risks are static */}}
+            inputClass={inputClass}
+          />
 
           {/* Risk acknowledgment */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
@@ -1490,6 +1815,9 @@ function BloodTransfusionConsentTamilTemplate() {
     hospitalNo: "",
     doctorName: "",
     patientName: "",
+    age: "",
+    gender: "",
+    comorbidities: [] as string[],
     relativeName: "",
     patientSignDate: "",
     relativeSignDate: "",
@@ -1498,8 +1826,19 @@ function BloodTransfusionConsentTamilTemplate() {
     emergencyDoctorTime: "",
   });
 
+  const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
+
   function update(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function toggleComorbidity(c: string) {
+    setForm(prev => ({
+      ...prev,
+      comorbidities: prev.comorbidities.includes(c)
+        ? prev.comorbidities.filter(x => x !== c)
+        : [...prev.comorbidities, c],
+    }));
   }
 
   const inputClass = "border-b border-gray-400 bg-transparent outline-none px-1 py-0.5 text-sm font-medium text-gray-900 focus:border-[var(--color-primary)] transition-colors";
@@ -1552,6 +1891,15 @@ function BloodTransfusionConsentTamilTemplate() {
               இரத்தம் அளிக்கும் தேவை ஏற்படக்கூடும் என்றும் மருத்துவர் என்னிடம் விளக்கியுள்ளார்.
             </p>
           </div>
+
+          {/* Patient Demographics + Auto Complications */}
+          <PatientDemographicsSection
+            age={form.age} gender={form.gender} comorbidities={form.comorbidities}
+            onAgeChange={v => update("age", v)} onGenderChange={v => update("gender", v)}
+            onToggleComorbidity={toggleComorbidity} autoRisks={autoRisks}
+            onApplyAutoRisks={() => {/* blood transfusion risks are static */}}
+            inputClass={inputClass} tamilLabels
+          />
 
           {/* Risk acknowledgment */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
