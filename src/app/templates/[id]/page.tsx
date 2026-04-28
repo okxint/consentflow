@@ -201,6 +201,7 @@ function PatientDemographicsSection({
   onProcedureChange, onProcedureSelect,
   autoRisks, procedureRisks, onApplyAutoRisks, onApplyProcedureRisks,
   customComplication, onCustomComplicationChange, onAddCustomComplication,
+  selectedComplications, onToggleComplication,
   inputClass,
   tamilLabels,
 }: {
@@ -223,6 +224,8 @@ function PatientDemographicsSection({
   customComplication: string;
   onCustomComplicationChange: (v: string) => void;
   onAddCustomComplication: () => void;
+  selectedComplications: string[];
+  onToggleComplication: (c: string) => void;
   inputClass: string;
   tamilLabels?: boolean;
 }) {
@@ -231,8 +234,12 @@ function PatientDemographicsSection({
     ? PROCEDURE_NAMES.filter(p => p.toLowerCase().includes(procedureName.toLowerCase()))
     : PROCEDURE_NAMES;
 
+  // Merge all possible complications for checkbox display
+  const allProcedureComplications = procedureRisks;
+  const allProfileComplications = autoRisks;
+
   return (
-    <div className="bg-blue-50/50 border border-blue-200/60 rounded-lg p-5 space-y-4">
+    <div className="bg-blue-50/50 border border-blue-200/60 rounded-lg p-5 space-y-5">
       <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider">
         {tamilLabels ? "நோயாளி விவரங்கள் — Patient Demographics" : "Patient Demographics"}
       </h3>
@@ -296,54 +303,32 @@ function PatientDemographicsSection({
         )}
       </div>
 
-      {/* Procedure-specific risks */}
-      {procedureRisks.length > 0 && (
-        <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-teal-800 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              {procedureRisks.length} procedure-specific risks detected
-            </p>
-            <button
-              onClick={onApplyProcedureRisks}
-              className="text-[10px] font-semibold bg-teal-600 text-white px-2.5 py-1 rounded-full hover:bg-teal-700 transition-colors"
-            >
-              {tamilLabels ? "Add to Risks / சேர்" : "Add to Risks"}
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
-            {procedureRisks.map((r, i) => (
-              <p key={i} className="text-xs text-teal-900 flex items-start gap-1.5">
-                <span className="text-teal-500 mt-0.5">•</span> {r}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Comorbidities */}
+      {/* Comorbidities with checkboxes */}
       <div>
         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
           {tamilLabels ? "ஏற்கனவே உள்ள நோய்கள் / Existing Comorbidities" : "Existing Comorbidities"}
         </label>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-          {COMORBIDITY_OPTIONS.map(c => (
-            <label key={c} className="flex items-center gap-2 cursor-pointer">
+          {[...COMORBIDITY_OPTIONS, ...comorbidities.filter(c => !COMORBIDITY_OPTIONS.includes(c))].map(c => (
+            <label key={c} className="flex items-center gap-2 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={comorbidities.includes(c)}
                 onChange={() => onToggleComorbidity(c)}
-                className="w-3.5 h-3.5 rounded border-gray-300 text-[var(--color-primary)]"
+                className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)]"
               />
-              <span className="text-xs text-gray-700">{c}</span>
+              <span className={`text-xs ${comorbidities.includes(c) ? "text-gray-900 font-medium" : "text-gray-600"}`}>{c}</span>
+              {!COMORBIDITY_OPTIONS.includes(c) && (
+                <span className="text-[9px] text-blue-500 font-medium">(custom)</span>
+              )}
             </label>
           ))}
         </div>
-        {/* Custom comorbidity */}
-        <div className="flex items-center gap-2 mt-2">
+        {/* Add another comorbidity */}
+        <div className="flex items-center gap-2 mt-3">
           <input
             className={`${inputClass} flex-1`}
-            placeholder={tamilLabels ? "வேறு நோய் சேர் / Add other comorbidity..." : "Add other comorbidity not listed above..."}
+            placeholder={tamilLabels ? "வேறு நோய் சேர் / Add another comorbidity..." : "Add another comorbidity..."}
             value={customComorbidity}
             onChange={e => onCustomComorbidityChange(e.target.value)}
             onKeyDown={e => e.key === "Enter" && onAddCustomComorbidity()}
@@ -351,49 +336,112 @@ function PatientDemographicsSection({
           <button
             onClick={onAddCustomComorbidity}
             disabled={!customComorbidity.trim()}
-            className="text-[10px] font-semibold bg-blue-600 text-white px-2.5 py-1 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-40"
+            className="text-[10px] font-semibold bg-blue-600 text-white px-3 py-1.5 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-40 whitespace-nowrap"
           >
-            + Add
+            + Add Another
           </button>
         </div>
       </div>
 
-      {/* Auto-detected complications from comorbidities/age/gender */}
-      {autoRisks.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              {tamilLabels
-                ? `${autoRisks.length} auto-detected complications — சிக்கல்கள் கண்டறியப்பட்டன`
-                : `${autoRisks.length} complications based on patient profile`}
-            </p>
-            <button
-              onClick={onApplyAutoRisks}
-              className="text-[10px] font-semibold bg-amber-600 text-white px-2.5 py-1 rounded-full hover:bg-amber-700 transition-colors"
-            >
-              {tamilLabels ? "Add to Risks / சேர்" : "Add to Risks"}
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
-            {autoRisks.map((r, i) => (
-              <p key={i} className="text-xs text-amber-900 flex items-start gap-1.5">
-                <span className="text-amber-500 mt-0.5">•</span> {r}
+      {/* ── Complications Section ── */}
+      {(allProcedureComplications.length > 0 || allProfileComplications.length > 0 || selectedComplications.length > 0) && (
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+            {tamilLabels ? "சிக்கல்கள் / Complications" : "Complications"}
+            <span className="text-[10px] font-normal text-gray-400 ml-2 normal-case">(check all that apply)</span>
+          </label>
+
+          {/* Procedure-specific complications */}
+          {allProcedureComplications.length > 0 && (
+            <div className="mb-3">
+              <p className="text-[10px] font-semibold text-teal-700 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                {tamilLabels ? "செயல்முறை சார்ந்த சிக்கல்கள் / Procedure-specific" : "Procedure-specific Complications"}
               </p>
-            ))}
-          </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 bg-teal-50/50 border border-teal-100 rounded-lg p-3">
+                {allProcedureComplications.map(c => (
+                  <label key={c} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedComplications.includes(c)}
+                      onChange={() => onToggleComplication(c)}
+                      className="w-4 h-4 rounded border-teal-300 text-teal-600"
+                    />
+                    <span className={`text-xs ${selectedComplications.includes(c) ? "text-teal-900 font-medium" : "text-teal-700"}`}>{c}</span>
+                  </label>
+                ))}
+              </div>
+              <button
+                onClick={onApplyProcedureRisks}
+                className="mt-1.5 text-[10px] font-semibold text-teal-600 hover:text-teal-800 transition-colors"
+              >
+                {tamilLabels ? "அனைத்தையும் தேர்வு / Select All" : "Select All"}
+              </button>
+            </div>
+          )}
+
+          {/* Profile-based complications */}
+          {allProfileComplications.length > 0 && (
+            <div className="mb-3">
+              <p className="text-[10px] font-semibold text-amber-700 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                {tamilLabels ? "நோயாளி சுயவிவர சிக்கல்கள் / Based on patient profile" : "Based on Age, Gender & Comorbidities"}
+              </p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 bg-amber-50/50 border border-amber-100 rounded-lg p-3">
+                {allProfileComplications.map(c => (
+                  <label key={c} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedComplications.includes(c)}
+                      onChange={() => onToggleComplication(c)}
+                      className="w-4 h-4 rounded border-amber-300 text-amber-600"
+                    />
+                    <span className={`text-xs ${selectedComplications.includes(c) ? "text-amber-900 font-medium" : "text-amber-700"}`}>{c}</span>
+                  </label>
+                ))}
+              </div>
+              <button
+                onClick={onApplyAutoRisks}
+                className="mt-1.5 text-[10px] font-semibold text-amber-600 hover:text-amber-800 transition-colors"
+              >
+                {tamilLabels ? "அனைத்தையும் தேர்வு / Select All" : "Select All"}
+              </button>
+            </div>
+          )}
+
+          {/* Custom-added complications shown as checked boxes */}
+          {selectedComplications.filter(c => !allProcedureComplications.includes(c) && !allProfileComplications.includes(c)).length > 0 && (
+            <div className="mb-3">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                {tamilLabels ? "கைமுறையாக சேர்க்கப்பட்ட / Manually Added" : "Manually Added"}
+              </p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                {selectedComplications.filter(c => !allProcedureComplications.includes(c) && !allProfileComplications.includes(c)).map(c => (
+                  <label key={c} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={true}
+                      onChange={() => onToggleComplication(c)}
+                      className="w-4 h-4 rounded border-gray-300 text-gray-600"
+                    />
+                    <span className="text-xs text-gray-900 font-medium">{c}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Custom complication */}
+      {/* Add another complication */}
       <div>
         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-          {tamilLabels ? "கூடுதல் சிக்கல்கள் / Additional Complications" : "Additional Complications (not listed above)"}
+          {tamilLabels ? "கூடுதல் சிக்கல் சேர் / Add Another Complication" : "Add Another Complication"}
         </label>
         <div className="flex items-center gap-2">
           <input
             className={`${inputClass} flex-1`}
-            placeholder={tamilLabels ? "கூடுதல் சிக்கல் சேர்..." : "Type a custom complication and press Add..."}
+            placeholder={tamilLabels ? "சிக்கல் தட்டச்சு செய்..." : "Type any complication and press Add..."}
             value={customComplication}
             onChange={e => onCustomComplicationChange(e.target.value)}
             onKeyDown={e => e.key === "Enter" && onAddCustomComplication()}
@@ -401,12 +449,24 @@ function PatientDemographicsSection({
           <button
             onClick={onAddCustomComplication}
             disabled={!customComplication.trim()}
-            className="text-[10px] font-semibold bg-red-600 text-white px-2.5 py-1 rounded-full hover:bg-red-700 transition-colors disabled:opacity-40"
+            className="text-[10px] font-semibold bg-red-600 text-white px-3 py-1.5 rounded-full hover:bg-red-700 transition-colors disabled:opacity-40 whitespace-nowrap"
           >
-            + Add Risk
+            + Add Another
           </button>
         </div>
       </div>
+
+      {/* Summary count */}
+      {selectedComplications.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 flex items-center justify-between">
+          <p className="text-xs font-medium text-gray-700">
+            {tamilLabels
+              ? `${selectedComplications.length} சிக்கல்கள் தேர்ந்தெடுக்கப்பட்டன`
+              : `${selectedComplications.length} complication${selectedComplications.length === 1 ? "" : "s"} selected`}
+          </p>
+          <span className="text-[10px] text-gray-400">These will appear on the consent form</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -438,6 +498,7 @@ function SurgeryConsentTemplate() {
     sigSurgeonDate: "",
     reviewPatientName: "",
     reviewDate: "",
+    selectedComplications: [] as string[],
   });
 
   const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
@@ -455,10 +516,20 @@ function SurgeryConsentTemplate() {
     }));
   }
 
+  function toggleComplication(c: string) {
+    setForm(prev => ({
+      ...prev,
+      selectedComplications: prev.selectedComplications.includes(c)
+        ? prev.selectedComplications.filter(x => x !== c)
+        : [...prev.selectedComplications, c],
+    }));
+  }
+
   function applyAutoRisks() {
     setForm(prev => ({
       ...prev,
       risks: [...prev.risks, ...autoRisks],
+      selectedComplications: [...new Set([...prev.selectedComplications, ...autoRisks])],
     }));
   }
 
@@ -574,6 +645,8 @@ function SurgeryConsentTemplate() {
             customComplication={form.customComplication}
             onCustomComplicationChange={v => update("customComplication", v)}
             onAddCustomComplication={() => { if (form.customComplication.trim()) { setForm(prev => ({ ...prev, risks: [...prev.risks, prev.customComplication.trim()], customComplication: "" })); } }}
+            selectedComplications={form.selectedComplications}
+            onToggleComplication={toggleComplication}
             inputClass={inputClass}
           />
 
@@ -620,7 +693,7 @@ function SurgeryConsentTemplate() {
             </p>
           </div>
 
-          {/* Risk section */}
+          {/* Complications section */}
           <div className="space-y-3">
             <p className="text-sm text-gray-800 font-medium">
               The procedure, benefit and risk and/or possible complications has been explained to me as outlined below:
@@ -841,6 +914,7 @@ function AnaesthesiaConsentTemplate() {
     sigParentDate: "",
     sigAnaesthesiologistName: "",
     sigAnaesthesiologistDate: "",
+    selectedComplications: [] as string[],
   });
 
   const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
@@ -855,6 +929,15 @@ function AnaesthesiaConsentTemplate() {
       comorbidities: prev.comorbidities.includes(c)
         ? prev.comorbidities.filter(x => x !== c)
         : [...prev.comorbidities, c],
+    }));
+  }
+
+  function toggleComplication(c: string) {
+    setForm(prev => ({
+      ...prev,
+      selectedComplications: prev.selectedComplications.includes(c)
+        ? prev.selectedComplications.filter(x => x !== c)
+        : [...prev.selectedComplications, c],
     }));
   }
 
@@ -977,6 +1060,8 @@ function AnaesthesiaConsentTemplate() {
             customComplication={form.customComplication}
             onCustomComplicationChange={v => update("customComplication", v)}
             onAddCustomComplication={() => { update("specificRisk", [form.specificRisk, (form.customComplication as string).trim()].filter(Boolean).join("; ")); update("customComplication", ""); }}
+            selectedComplications={form.selectedComplications}
+            onToggleComplication={toggleComplication}
             inputClass={inputClass}
           />
 
@@ -1018,7 +1103,7 @@ function AnaesthesiaConsentTemplate() {
                     {type.risks && (
                       <div className="mt-2 bg-amber-50 border border-amber-200 rounded px-3 py-2">
                         <p className="text-xs text-amber-800">
-                          <span className="font-semibold">Risks:</span> {type.risks}
+                          <span className="font-semibold">Complications:</span> {type.risks}
                         </p>
                       </div>
                     )}
@@ -1189,6 +1274,7 @@ function SurgeryConsentTamilTemplate() {
     sigSurgeonDate: "",
     reviewPatientName: "",
     reviewDate: "",
+    selectedComplications: [] as string[],
   });
 
   const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
@@ -1206,10 +1292,20 @@ function SurgeryConsentTamilTemplate() {
     }));
   }
 
+  function toggleComplication(c: string) {
+    setForm(prev => ({
+      ...prev,
+      selectedComplications: prev.selectedComplications.includes(c)
+        ? prev.selectedComplications.filter(x => x !== c)
+        : [...prev.selectedComplications, c],
+    }));
+  }
+
   function applyAutoRisks() {
     setForm(prev => ({
       ...prev,
       risks: [...prev.risks, ...autoRisks],
+      selectedComplications: [...new Set([...prev.selectedComplications, ...autoRisks])],
     }));
   }
 
@@ -1314,6 +1410,8 @@ function SurgeryConsentTamilTemplate() {
             customComplication={form.customComplication}
             onCustomComplicationChange={v => update("customComplication", v)}
             onAddCustomComplication={() => { if (form.customComplication.trim()) { setForm(prev => ({ ...prev, risks: [...prev.risks, prev.customComplication.trim()], customComplication: "" })); } }}
+            selectedComplications={form.selectedComplications}
+            onToggleComplication={toggleComplication}
             inputClass={inputClass} tamilLabels
           />
 
@@ -1326,7 +1424,7 @@ function SurgeryConsentTamilTemplate() {
             </p>
           </div>
 
-          {/* Risk section */}
+          {/* Complications section */}
           <div className="space-y-3">
             <p className="text-sm text-gray-800 font-medium">
               செயல்முறை, நன்மை மற்றும் ஆபத்து மற்றும்/அல்லது சாத்தியமான சிக்கல்கள் கீழே குறிப்பிடப்பட்டுள்ளவாறு எனக்கு விளக்கப்பட்டது:
@@ -1551,6 +1649,7 @@ function AnaesthesiaConsentTamilTemplate() {
     sigParentDate: "",
     sigAnaesthesiologistName: "",
     sigAnaesthesiologistDate: "",
+    selectedComplications: [] as string[],
   });
 
   const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
@@ -1565,6 +1664,15 @@ function AnaesthesiaConsentTamilTemplate() {
       comorbidities: prev.comorbidities.includes(c)
         ? prev.comorbidities.filter(x => x !== c)
         : [...prev.comorbidities, c],
+    }));
+  }
+
+  function toggleComplication(c: string) {
+    setForm(prev => ({
+      ...prev,
+      selectedComplications: prev.selectedComplications.includes(c)
+        ? prev.selectedComplications.filter(x => x !== c)
+        : [...prev.selectedComplications, c],
     }));
   }
 
@@ -1687,6 +1795,8 @@ function AnaesthesiaConsentTamilTemplate() {
             customComplication={form.customComplication}
             onCustomComplicationChange={v => update("customComplication", v)}
             onAddCustomComplication={() => { update("specificRisk", [form.specificRisk, (form.customComplication as string).trim()].filter(Boolean).join("; ")); update("customComplication", ""); }}
+            selectedComplications={form.selectedComplications}
+            onToggleComplication={toggleComplication}
             inputClass={inputClass} tamilLabels
           />
 
@@ -1728,7 +1838,7 @@ function AnaesthesiaConsentTamilTemplate() {
                     {type.risks && (
                       <div className="mt-2 bg-amber-50 border border-amber-200 rounded px-3 py-2">
                         <p className="text-xs text-amber-800">
-                          <span className="font-semibold">ஆபத்துகள்:</span> {type.risks}
+                          <span className="font-semibold">சிக்கல்கள்:</span> {type.risks}
                         </p>
                       </div>
                     )}
@@ -1890,6 +2000,7 @@ function BloodTransfusionConsentTemplate() {
     emergencyDoctorName: "",
     emergencyDoctorDate: "",
     emergencyDoctorTime: "",
+    selectedComplications: [] as string[],
   });
 
   const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
@@ -1904,6 +2015,15 @@ function BloodTransfusionConsentTemplate() {
       comorbidities: prev.comorbidities.includes(c)
         ? prev.comorbidities.filter(x => x !== c)
         : [...prev.comorbidities, c],
+    }));
+  }
+
+  function toggleComplication(c: string) {
+    setForm(prev => ({
+      ...prev,
+      selectedComplications: prev.selectedComplications.includes(c)
+        ? prev.selectedComplications.filter(x => x !== c)
+        : [...prev.selectedComplications, c],
     }));
   }
 
@@ -1969,10 +2089,12 @@ function BloodTransfusionConsentTemplate() {
             customComplication={form.customComplication}
             onCustomComplicationChange={v => update("customComplication", v)}
             onAddCustomComplication={() => {}}
+            selectedComplications={form.selectedComplications}
+            onToggleComplication={toggleComplication}
             inputClass={inputClass}
           />
 
-          {/* Risk acknowledgment */}
+          {/* Complications acknowledgment */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <p className="text-sm leading-relaxed text-gray-800">
               I understand that despite preparation and testing as per current standards, there is small chance that
@@ -2090,6 +2212,7 @@ function BloodTransfusionConsentTamilTemplate() {
     emergencyDoctorName: "",
     emergencyDoctorDate: "",
     emergencyDoctorTime: "",
+    selectedComplications: [] as string[],
   });
 
   const autoRisks = getAutoComplications(form.age, form.gender, form.comorbidities);
@@ -2104,6 +2227,15 @@ function BloodTransfusionConsentTamilTemplate() {
       comorbidities: prev.comorbidities.includes(c)
         ? prev.comorbidities.filter(x => x !== c)
         : [...prev.comorbidities, c],
+    }));
+  }
+
+  function toggleComplication(c: string) {
+    setForm(prev => ({
+      ...prev,
+      selectedComplications: prev.selectedComplications.includes(c)
+        ? prev.selectedComplications.filter(x => x !== c)
+        : [...prev.selectedComplications, c],
     }));
   }
 
@@ -2172,10 +2304,12 @@ function BloodTransfusionConsentTamilTemplate() {
             customComplication={form.customComplication}
             onCustomComplicationChange={v => update("customComplication", v)}
             onAddCustomComplication={() => {}}
+            selectedComplications={form.selectedComplications}
+            onToggleComplication={toggleComplication}
             inputClass={inputClass} tamilLabels
           />
 
-          {/* Risk acknowledgment */}
+          {/* Complications acknowledgment */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <p className="text-sm leading-relaxed text-gray-800">
               தற்போது நடைமுறை பரிசோதனைகள் மற்றும் ஏற்பாடுகளின் பின் கூடுமானவரை ஒரு சிறிய நிகழ்தகவு
