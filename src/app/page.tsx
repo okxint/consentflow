@@ -16,22 +16,40 @@ import {
   Database,
 } from "lucide-react";
 
-/* ─── WhatsApp Demo ─── */
+/* ─── WhatsApp Demo — Staff fills template via WA ─── */
 function WhatsAppDemo() {
   const [step, setStep] = useState(0);
   const [started, setStarted] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const messages = [
-    { from: "staff" as const, text: "ID: APL-4521\nAnanya Reddy\nLap Cholecystectomy\n9900145678", delay: 0 },
-    { from: "bot" as const, text: "\u2705 Found patient APL-4521\n\nForm created from Lap Surgery template\n\ud83d\udce4 Sending to +91 99001 45678...", delay: 1400 },
-    { from: "bot" as const, text: "\u2705 Consent link delivered\n\nPatient will receive:\n\ud83d\udd17 Secure consent form\n\ud83d\udccb Procedure details\n\ud83c\udfa5 Video KYC prompt\n\u270d\ufe0f Signature pad", delay: 2600 },
-    { from: "bot" as const, text: "\ud83d\udd14 Update:\n\ud83d\udc41\ufe0f Ananya opened the link\n\u2705 Reviewed procedure\n\ud83c\udfa5 Video KYC recorded\n\u270d\ufe0f Signed\n\n\u2705 Consent #APL-4521 complete", delay: 4000 },
+  type Msg = { from: "staff" | "bot"; text: string; buttons?: string[]; selected?: string; checks?: { label: string; checked: boolean }[] };
+
+  const messages: Msg[] = [
+    { from: "bot", text: "👋 New consent form!\nWhat would you like to do?", buttons: ["📝 Create Form", "📊 Check Status"], selected: "📝 Create Form" },
+    { from: "bot", text: "Patient name?", },
+    { from: "staff", text: "Ananya Reddy" },
+    { from: "bot", text: "Age & Gender?" },
+    { from: "staff", text: "34 / Female" },
+    { from: "bot", text: "Select procedure:", buttons: ["Total Knee Replacement", "ACL Reconstruction", "Lap Cholecystectomy", "Rotator Cuff Repair", "More..."], selected: "Lap Cholecystectomy" },
+    { from: "bot", text: "⚡ Auto-detected complications for Lap Cholecystectomy.\nSelect all that apply:", checks: [
+      { label: "Bile duct injury", checked: true },
+      { label: "Internal bleeding", checked: true },
+      { label: "Wound infection", checked: true },
+      { label: "Bowel perforation", checked: false },
+      { label: "Post-op pain", checked: true },
+      { label: "DVT / PE", checked: false },
+    ] },
+    { from: "staff", text: "✅ 4 complications selected" },
+    { from: "bot", text: "Any comorbidities?", buttons: ["Diabetes", "Hypertension", "COPD / Asthma", "None", "Other..."], selected: "Hypertension" },
+    { from: "bot", text: "⚠️ Added: BP fluctuations, higher bleeding risk\n\nPatient phone number?" },
+    { from: "staff", text: "9900145678" },
+    { from: "bot", text: "✅ Form ready!\n\n👤 Ananya Reddy, 34/F\n🏥 Lap Cholecystectomy\n⚠️ 6 complications\n📱 +91 99001 45678\n\n📤 Sending to patient..." },
+    { from: "bot", text: "✅ Consent sent!\nPatient will get:\n🔗 Form link\n🎥 Video KYC\n✍️ Signature pad\n\n⏰ Expires in 48hrs" },
   ];
 
   useEffect(() => {
     if (!started || step >= messages.length) return;
-    const timer = setTimeout(() => setStep((s) => s + 1), messages[step].delay || 1000);
+    const timer = setTimeout(() => setStep((s) => s + 1), 1400);
     return () => clearTimeout(timer);
   }, [step, started, messages.length]);
 
@@ -55,25 +73,56 @@ function WhatsAppDemo() {
           </div>
         </div>
 
-        <div className="h-72 overflow-y-auto p-3 space-y-2 scroll-smooth" style={{ background: "#ece5dd" }}>
+        <div className="h-[340px] overflow-y-auto p-3 space-y-2 scroll-smooth" style={{ background: "#ece5dd" }}>
           {!started && (
             <div className="h-full flex flex-col items-center justify-center">
               <button
                 onClick={() => { setStarted(true); setStep(1); }}
                 className="bg-[#25d366] text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#1da851] transition-all hover:scale-105 shadow-lg shadow-green-500/20"
               >
-                \u25b6 Play Demo
+                ▶ Play Demo
               </button>
-              <p className="text-[11px] text-gray-500 mt-2">See the assistant send a consent form</p>
+              <p className="text-[11px] text-gray-500 mt-2 text-center">Fill consent template via WhatsApp</p>
             </div>
           )}
 
           {started && messages.slice(0, step).map((msg, i) => (
             <div key={i} className={`flex ${msg.from === "staff" ? "justify-end" : "justify-start"}`} style={{ animation: "fadeSlideUp 0.3s ease-out" }}>
-              <div className={`max-w-[82%] rounded-lg px-2.5 py-1.5 shadow-sm text-[12px] leading-relaxed ${msg.from === "staff" ? "bg-[#dcf8c6] rounded-tr-none" : "bg-white rounded-tl-none"}`}>
-                {msg.from === "bot" && <p className="text-[9px] font-bold text-[#075e54] mb-0.5">ConsentFlow Bot</p>}
-                <p className="whitespace-pre-wrap">{msg.text}</p>
-                <div className="flex items-center justify-end gap-0.5 mt-0.5">
+              <div className={`max-w-[88%] rounded-lg shadow-sm text-[11px] leading-relaxed ${msg.from === "staff" ? "bg-[#dcf8c6] rounded-tr-none px-2.5 py-1.5" : "bg-white rounded-tl-none"}`}>
+                {msg.from === "bot" && (
+                  <div className="px-2.5 pt-1.5">
+                    <p className="text-[9px] font-bold text-[#075e54] mb-0.5">ConsentFlow Bot</p>
+                  </div>
+                )}
+                <div className="px-2.5 pb-1">
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                </div>
+
+                {/* WhatsApp-style button list */}
+                {msg.buttons && (
+                  <div className="border-t border-gray-100 mt-1">
+                    {msg.buttons.map((b) => (
+                      <div key={b} className={`px-2.5 py-1.5 text-[11px] border-b border-gray-50 last:border-0 ${b === msg.selected ? "text-[#075e54] font-semibold bg-teal-50/60" : "text-[#075e54]"}`}>
+                        {b === msg.selected && <span className="mr-1">☑</span>}
+                        {b}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* WhatsApp-style checkboxes */}
+                {msg.checks && (
+                  <div className="border-t border-gray-100 mt-1 px-2.5 py-1">
+                    {msg.checks.map((c) => (
+                      <div key={c.label} className="flex items-center gap-1.5 py-0.5">
+                        <span className={`text-[10px] ${c.checked ? "text-[#25d366]" : "text-gray-300"}`}>{c.checked ? "☑" : "☐"}</span>
+                        <span className={`text-[10px] ${c.checked ? "text-gray-800" : "text-gray-400"}`}>{c.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-end gap-0.5 px-2.5 pb-1">
                   <span className="text-[9px] text-gray-500">now</span>
                   {msg.from === "staff" && <CheckCheck className="w-3 h-3 text-blue-500" />}
                 </div>
@@ -96,7 +145,7 @@ function WhatsAppDemo() {
           {started && step >= messages.length && (
             <div className="flex justify-center pt-1">
               <button onClick={() => { setStep(0); setStarted(false); }} className="text-[11px] text-[#075e54] bg-white/80 px-3 py-1 rounded-full hover:bg-white">
-                \u21bb Replay
+                ↻ Replay
               </button>
             </div>
           )}
